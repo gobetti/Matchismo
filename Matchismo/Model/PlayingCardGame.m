@@ -11,7 +11,6 @@
 
 @interface PlayingCardGame()
 @property (nonatomic, readwrite) NSUInteger mode;
-@property (nonatomic, readwrite) NSInteger score;
 // private:
 @property (nonatomic, strong) NSMutableArray *cards;
 @property (nonatomic, strong) NSMutableArray *otherCards;
@@ -78,7 +77,7 @@ static const int COST_TO_CHOOSE = 1;
     Card *card = [self cardAtIndex:index];
     if (!card.isMatched) // only makes sense if card is not already matched
     {
-        int points;
+        int points = 0;
         // flip back if the chosen card is the same as before:
         if (card.isChosen)
         {

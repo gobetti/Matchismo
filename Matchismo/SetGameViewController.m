@@ -13,7 +13,6 @@
 
 @interface SetGameViewController ()
 @property (strong, nonatomic) SetGame *game;
-@property (nonatomic, retain, readwrite) NSMutableArray *cardViews;
 @property (strong, nonatomic) IBOutlet UIButton *dealButton;
 @end
 

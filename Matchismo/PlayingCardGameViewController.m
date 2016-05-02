@@ -14,7 +14,6 @@
 @interface PlayingCardGameViewController ()
 @property (strong, nonatomic) PlayingCardGame *game;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *modeSelector;
-@property (nonatomic, retain, readwrite) NSMutableArray *cardViews;
 @end
 
 @implementation PlayingCardGameViewController
