@@ -172,14 +172,6 @@
     return self.resolved;
 }
 
-- (CGPoint)centerOfCellAtRow:(NSUInteger)row inColumn:(NSUInteger)column
-{
-    CGPoint center = CGPointMake(self.cellSize.width/2, self.cellSize.height/2);
-    center.x += column * self.cellSize.width;
-    center.y += row * self.cellSize.height;
-    return center;
-}
-
 - (CGRect)frameOfCellAtRow:(NSUInteger)row inColumn:(NSUInteger)column
 {
     CGRect frame = CGRectMake(0, 0, self.cellSize.width, self.cellSize.height);
