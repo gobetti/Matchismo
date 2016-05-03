@@ -16,8 +16,8 @@
 @property (strong, nonatomic, readonly) NSMutableAttributedString *history;
 @property (nonatomic, readonly) NSUInteger numberOfPresentCards;
 
-// designated initializer
-- (instancetype)initWithCardCount:(NSUInteger)count;
+- (instancetype)init __attribute__((unavailable ("One must use the designated initializer: initWithCardCount:")));
+- (instancetype)initWithCardCount:(NSUInteger)count NS_DESIGNATED_INITIALIZER;
 
 - (void)chooseCardAtIndex:(NSUInteger)index;
 - (id)cardAtIndex:(NSUInteger)index;

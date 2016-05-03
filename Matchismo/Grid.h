@@ -50,7 +50,7 @@
 // origin row and column are zero
 
 - (instancetype)init __attribute__((unavailable ("One must use the designated initializer: initWithSize:andCellAspectRatio:toContainAtLeast:")));
-- (instancetype)initWithSize:(CGSize)size andCellAspectRatio:(CGFloat)aspectRatio toContainAtLeast:(NSUInteger)minimumNumberOfCells;
+- (instancetype)initWithSize:(CGSize)size andCellAspectRatio:(CGFloat)aspectRatio toContainAtLeast:(NSUInteger)minimumNumberOfCells NS_DESIGNATED_INITIALIZER;
 
 - (CGRect)frameOfCellAtRow:(NSUInteger)row inColumn:(NSUInteger)column;
 
