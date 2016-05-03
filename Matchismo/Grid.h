@@ -39,7 +39,7 @@
 @property (nonatomic) CGFloat minCellHeight;
 @property (nonatomic) CGFloat maxCellHeight;    // ignored if less than minCellHeight
 
-// calculated outputs (value of NO or 0 or CGSizeZero means "invalid inputs")
+// calculated outputs (NO, 0, CGSizeZero mean that the inputs were invalid)
 
 @property (nonatomic, readonly) BOOL inputsAreValid;    // cells will fit into requested size
 
@@ -48,6 +48,9 @@
 @property (nonatomic, readonly) NSUInteger columnCount;
 
 // origin row and column are zero
+
+- (instancetype)init __attribute__((unavailable ("One must use the designated initializer: initWithSize:andCellAspectRatio:toContainAtLeast:")));
+- (instancetype)initWithSize:(CGSize)size andCellAspectRatio:(CGFloat)aspectRatio toContainAtLeast:(NSUInteger)minimumNumberOfCells;
 
 - (CGRect)frameOfCellAtRow:(NSUInteger)row inColumn:(NSUInteger)column;
 

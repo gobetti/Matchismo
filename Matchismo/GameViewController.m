@@ -199,17 +199,17 @@
 - (Grid *)grid
 {
     if (!_grid) {
-        _grid = [[Grid alloc] init];
-        _grid.cellAspectRatio = 1/1.5;
+        NSUInteger minimumNumberOfCells = 0;
         if (self.game.numberOfPresentCards)
         {
-            _grid.minimumNumberOfCells = self.game.numberOfPresentCards;
+            minimumNumberOfCells = self.game.numberOfPresentCards;
         }
         else
         {
-            _grid.minimumNumberOfCells = self.numberOfStartingCards;
+            minimumNumberOfCells = self.numberOfStartingCards;
         }
-        _grid.size = self.gridView.frame.size;
+        
+        _grid = [[Grid alloc] initWithSize:self.gridView.frame.size andCellAspectRatio:1/1.5 toContainAtLeast:minimumNumberOfCells];
     }
     return _grid;
 }

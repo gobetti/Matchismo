@@ -10,7 +10,6 @@
 
 @interface Grid()
 @property (nonatomic) BOOL resolved;
-@property (nonatomic) BOOL unresolvable;
 @property (nonatomic, readwrite) NSUInteger rowCount;
 @property (nonatomic, readwrite) NSUInteger columnCount;
 @property (nonatomic, readwrite) CGSize cellSize;
@@ -22,16 +21,10 @@
 - (void)validate
 {
     if (self.resolved) return;    // already valid, nothing to do
-    if (self.unresolvable) return;  // already tried to validate and couldn't
 
     double overallWidth = ABS(self.size.width);
     double overallHeight = ABS(self.size.height);
     double aspectRatio = ABS(self.cellAspectRatio);
-
-    if (!self.minimumNumberOfCells || !aspectRatio || !overallWidth || !overallHeight) {
-        self.unresolvable = YES;
-        return; // invalid inputs
-    }
 
     double minCellWidth = self.minCellWidth;
     double minCellHeight = self.minCellHeight;
@@ -53,117 +46,107 @@
     if (minCellWidth < 0) minCellWidth = 0;
     if (minCellHeight < 0) minCellHeight = 0;
     
-    
-    if (!self.resolved && !self.unresolvable)
+    // get maximal area a card could ever have:
+    double cellArea = overallWidth * overallHeight / self.minimumNumberOfCells;
+    // as width and height are fixely related by aspect ratio, get maximal width:
+    double cellWidth = sqrt(cellArea * aspectRatio);
+    // get the minimal number of lines at this card width:
+    int columnCount = floor(overallWidth / cellWidth);
+    if (columnCount == 0) columnCount = 1;
+    // adjust the card width to the integer number of columns:
+    cellWidth = overallWidth / columnCount;
+    double cellHeight = cellWidth / aspectRatio;
+    // get the minimal number of lines at this card height:
+    int rowCount = floor(overallHeight / cellHeight);
+    if (rowCount == 0)
     {
-        // get maximal area a card could ever have:
-        double cellArea = overallWidth * overallHeight / self.minimumNumberOfCells;
-        // as width and height are fixely related by aspect ratio, get maximal width:
-        double cellWidth = sqrt(cellArea * aspectRatio);
-        // get the minimal number of lines at this card width:
-        int columnCount = floor(overallWidth / cellWidth);
-        if (columnCount == 0) columnCount = 1;
-        // adjust the card width to the integer number of columns:
-        cellWidth = overallWidth / columnCount;
-        double cellHeight = cellWidth / aspectRatio;
-        // get the minimal number of lines at this card height:
-        int rowCount = floor(overallHeight / cellHeight);
-        if (rowCount == 0)
+        rowCount = 1;
+        cellHeight = overallHeight;
+        cellWidth = cellHeight * aspectRatio;
+    }
+    // we have some nice initial estimations.
+    // now let's check if we need more rows/columns and how many.
+    while (!self.resolved)
+    {
+        if (self.minimumNumberOfCells <= columnCount * rowCount)
         {
-            rowCount = 1;
-            cellHeight = overallHeight;
-            cellWidth = cellHeight * aspectRatio;
-        }
-        // we have some nice initial estimations.
-        // now let's check if we need more rows/columns and how many.
-        while (!self.resolved)
-        {
-            if (self.minimumNumberOfCells <= columnCount * rowCount)
+            if (overallWidth >= columnCount * cellWidth)
             {
-                if (overallWidth >= columnCount * cellWidth)
+                if (overallHeight >= rowCount * cellHeight)
                 {
-                    if (overallHeight >= rowCount * cellHeight)
+                    // conditions are all fine, we just need to set it at maximal specified dimensions if higher...
+                    if (maxCellWidth && maxCellHeight)
                     {
-                        // conditions are all fine, we just need to set it at maximal specified dimensions if higher...
-                        if (maxCellWidth && maxCellHeight)
+                        if (cellWidth > maxCellWidth || cellHeight > maxCellHeight)
                         {
-                            if (cellWidth > maxCellWidth || cellHeight > maxCellHeight)
-                            {
-                                cellWidth = maxCellWidth;
-                                cellHeight = maxCellHeight;
-                            }
+                            cellWidth = maxCellWidth;
+                            cellHeight = maxCellHeight;
                         }
-                        
-                        if (flipped)
-                        {
-                            self.rowCount = columnCount;
-                            self.columnCount = rowCount;
-                            self.cellSize = CGSizeMake(cellHeight, cellWidth);
-                        }
-                        else
-                        {
-                            self.rowCount = rowCount;
-                            self.columnCount = columnCount;
-                            self.cellSize = CGSizeMake(cellWidth, cellHeight);
-                        }
-                        self.dxToCenter = (overallWidth - cellWidth*columnCount)/2;
-                        self.resolved = YES;
+                    }
+                    
+                    if (flipped)
+                    {
+                        self.rowCount = columnCount;
+                        self.columnCount = rowCount;
+                        self.cellSize = CGSizeMake(cellHeight, cellWidth);
                     }
                     else
                     {
-                        // reduce height to fit
-                        cellHeight = overallHeight / rowCount;
-                        cellWidth = cellHeight * aspectRatio;
+                        self.rowCount = rowCount;
+                        self.columnCount = columnCount;
+                        self.cellSize = CGSizeMake(cellWidth, cellHeight);
                     }
+                    self.dxToCenter = (overallWidth - cellWidth*columnCount)/2;
+                    self.resolved = YES;
                 }
                 else
                 {
-                    // reduce width to fit
-                    cellWidth = overallWidth / columnCount;
-                    cellHeight = cellWidth / aspectRatio;
+                    // reduce height to fit
+                    cellHeight = overallHeight / rowCount;
+                    cellWidth = cellHeight * aspectRatio;
                 }
             }
             else
             {
-                // increase rows and/or columns...
-                if (
-                    (self.minimumNumberOfCells <= (rowCount+1) * columnCount) &&
-                    (self.minimumNumberOfCells <= rowCount * (columnCount + 1)))
+                // reduce width to fit
+                cellWidth = overallWidth / columnCount;
+                cellHeight = cellWidth / aspectRatio;
+            }
+        }
+        else
+        {
+            // increase rows and/or columns...
+            if ((self.minimumNumberOfCells <= (rowCount+1) * columnCount) &&
+                (self.minimumNumberOfCells <= rowCount * (columnCount + 1)))
+            {
+                // both increases will work, choose the lowest product.
+                if ((rowCount+1) * columnCount < rowCount * (columnCount + 1))
                 {
-                    // both increases will work, choose the lowest product.
-                    if ((rowCount+1) * columnCount < rowCount * (columnCount + 1))
-                    {
-                        rowCount++;
-                    }
-                    else
-                    {
-                        columnCount++;
-                    }
-                }
-                else if (self.minimumNumberOfCells <= (rowCount+1) * columnCount)
-                {
-                    // more rows
                     rowCount++;
-                }
-                else if (self.minimumNumberOfCells <= rowCount * (columnCount + 1))
-                {
-                    // more columns
-                    columnCount++;
                 }
                 else
                 {
-                    // more rows and more columns
-                    rowCount++; columnCount++;
+                    columnCount++;
                 }
+            }
+            else if (self.minimumNumberOfCells <= (rowCount+1) * columnCount)
+            {
+                // more rows
+                rowCount++;
+            }
+            else if (self.minimumNumberOfCells <= rowCount * (columnCount + 1))
+            {
+                // more columns
+                columnCount++;
+            }
+            else
+            {
+                // more rows and more columns
+                rowCount++;
+                columnCount++;
             }
         }
     }
-}
-
-- (void)setResolved:(BOOL)resolved
-{
-    self.unresolvable = NO;
-    _resolved = resolved;
 }
 
 - (BOOL)inputsAreValid
@@ -178,6 +161,18 @@
     frame.origin.x += column * self.cellSize.width + self.dxToCenter;
     frame.origin.y += row * self.cellSize.height;
     return frame;
+}
+
+- (instancetype)initWithSize:(CGSize)size andCellAspectRatio:(CGFloat)aspectRatio toContainAtLeast:(NSUInteger)minimumNumberOfCells
+{
+    if (!(self = [super init]))
+        return nil;
+    
+    self->_size = size;
+    self->_cellAspectRatio = aspectRatio;
+    self->_minimumNumberOfCells = minimumNumberOfCells;
+    
+    return self;
 }
 
 - (void)setMinimumNumberOfCells:(NSUInteger)minimumNumberOfCells
