@@ -72,69 +72,76 @@
                          }
                          
                          // if this is the last matched card:
+                         BOOL shouldUpdateGrid = NO;
+                         if (!self.game.isDeckEmpty)
                          {
-                             if (!self.game.isDeckEmpty)
-                             {
-                                 // deal more cards from the deck
-                                 if (self.game.numberOfPresentCards < self.numberOfStartingCards) {
-                                     [self dealMoreCards];
-                                 }
-                                 self.dealButton.enabled = YES;
-                                 self.dealButton.alpha = 1.0;
+                             // deal more cards from the deck if the current number is less than the starting one
+                             if (self.game.numberOfPresentCards < self.numberOfStartingCards) {
+                                 shouldUpdateGrid = [self dealMoreCards];
                              }
-                             else
+                             self.dealButton.enabled = YES;
+                             self.dealButton.alpha = 1.0;
+                         }
+                         else
+                         {
+                             // the deck is empty, if there are no more sets, the game is over
+                             self.dealButton.enabled = NO;
+                             self.dealButton.alpha = 0.5;
+                             if (!self.game.isThereAnySet)
                              {
-                                 // the deck is empty, if there are no more sets, the game is over
-                                 self.dealButton.enabled = NO;
-                                 self.dealButton.alpha = 0.5;
-                                 if (!self.game.isThereAnySet)
-                                 {
-                                     [self.game gameOver];
-                                     [self updateUI];
-                                 }
+                                 [self.game gameOver];
+                                 [self updateUI];
                              }
-                             
-                             // reset tags
-                             int tag = 0;
-                             for (SetCardView *cardView in self.cardViews)
-                             {
-                                 cardView.tag = tag++;
+                             else {
+                                 shouldUpdateGrid = YES;
                              }
                          }
+                         
+                         if (shouldUpdateGrid) {
+                             [self updateGrid];
+                         }
+                         
+                         // reset tags
+                         int tag = 0;
+                         for (SetCardView *cardView in self.cardViews)
+                         {
+                             cardView.tag = tag++;
+                         }
                      }];
-    
 }
 
 // Specific functions:
 
-- (void)dealMoreCards
+- (BOOL)dealMoreCards
 {
     NSArray *newCards = [[NSArray alloc] initWithArray:[self.game dealMoreCards]];
-    if (newCards)
-    {
-        int newViews = 0;
-        for (SetCard *card in newCards)
-        {
-            SetCardView *cardView;
-            cardView = [self createViewForCard:card];
-            // the game already has 3 more cards... so the indexes must be cards-3 (+1) (+1)
-            cardView.tag = self.game.numberOfPresentCards-3+newViews;
-            newViews++;
-            
-            UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                                  action:@selector(touchCardView:)];
-            [cardView addGestureRecognizer:tap];
-            cardView.frame = self.deckFrame;
-            [self.cardViews addObject:cardView];
-            [[[self.cardViews firstObject] superview] addSubview:cardView];
-        }
-        if (self.game.isDeckEmpty)
-        {
-            self.dealButton.enabled = NO;
-            self.dealButton.alpha = 0.5;
-        }
-        [self updateGrid];
+    if (!newCards) {
+        return NO;
     }
+
+    int newViews = 0;
+    for (SetCard *card in newCards)
+    {
+        SetCardView *cardView;
+        cardView = [self createViewForCard:card];
+        // the game already has 3 more cards... so the indexes must be cards-3 (+1) (+1)
+        cardView.tag = self.game.numberOfPresentCards-3+newViews;
+        newViews++;
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                              action:@selector(touchCardView:)];
+        [cardView addGestureRecognizer:tap];
+        cardView.frame = self.deckFrame;
+        [self.cardViews addObject:cardView];
+        [[[self.cardViews firstObject] superview] addSubview:cardView];
+    }
+    if (self.game.isDeckEmpty)
+    {
+        self.dealButton.enabled = NO;
+        self.dealButton.alpha = 0.5;
+    }
+    
+    return YES;
 }
 
 - (IBAction)touchDealButton:(UIButton *)sender

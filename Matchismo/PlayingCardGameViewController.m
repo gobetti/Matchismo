@@ -57,101 +57,37 @@
 
 - (void)updateMatchedCardView:(CardView *)cardView atIndex:(NSUInteger)index animationOrder:(NSUInteger)order totalOfMatchedCards:(NSUInteger)total
 {
-    CGRect originalFrame = cardView.frame;
-    
-    /* we won't mess with the matchedCardView directly otherwise we would lose the matched cards visual
-     * while they go away in the animation (remember, the action inside animation occurs instantly).
-     * so we'll create a newCardView. and when the deck is empty, this newCardView will contain the
-     * card that was at last position, avoiding holes in the game. */
-    PlayingCardView *newCardView;
-    PlayingCardView *lastView;
-    
-    BOOL isDeckEmpty = [self.game isDeckEmpty];
-    
-    if (!isDeckEmpty)
-    {
-        NSLog(@"deck is empty");
-        // replace the removed card with a new random one from the deck:
-        PlayingCard *card = [self.game dealRandomCardAtIndex:index];
-        // associate the new card to the view:
-        newCardView = [self createViewForCard:card];
-    }
-    else if (index != self.game.numberOfPresentCards)
-    {
-        NSLog(@"deck is empty and the matched card is not the last");
-        // deck is empty and the matched card is not the last card.
-        // let's move the last card to the hole left by the matched card.
-        // P.S.: because the index starts at 0, the comparison should be numberOfPresentCards-1, but we already removed 1 card
-        lastView = [self.cardViews lastObject];
-        [self.cardViews removeObject:lastView];
-        // notice that if the last card is a matched card, it was already removed! ;)
-        // the animation will take care of showing it going away... and that's it.
-        
-        // pick up the current last card and change its index:
-        PlayingCard *lastCard = [self.game lastCard];
-        [self.game removeCard:lastCard];
-        [self.game insertCard:lastCard atIndex:index];
-        // associate that card to the view:
-        newCardView = [self createViewForCard:lastCard];
-    }
-    
-    // the following block should be executed if any of the two conditions above is true:
-    if (!isDeckEmpty ||
-        (isDeckEmpty && index != self.game.numberOfPresentCards))
-    {
-        NSLog(@"deck is not empty, or the deck is empty and the matched card is not the last");
-        // won't execute if the deck is empty AND the last card is a matched card.
-        newCardView.tag = index;
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]
-                                       initWithTarget:self action:@selector(touchCardView:)];
-        [newCardView addGestureRecognizer:tap];
-        newCardView.frame = self.deckFrame; // at first, out of sight
-        [self.cardViews insertObject:newCardView atIndex:index];
-        [[cardView superview] addSubview:newCardView];
-    }
-    
-    // animation: matched card going away
+    // animation: cards going away
     [UIView animateWithDuration:1
                           delay:0.2*(1+order)
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{ cardView.frame = self.deckFrame; }
                      completion:^(BOOL finished){
                          [cardView removeFromSuperview];
-                         if (isDeckEmpty && index == self.game.numberOfPresentCards)
-                         {
-                             // that's all if the last card is a matched card AND the deck is empty!
-                             // the last card was put away and no other card will come into its place.
-                             
-                             // update grid if this was the last matched card
-                             if (order == total-1)
-                                 [self updateGrid];
+                         if (order < total-1) {
+                             return;
                          }
-                         else
+                         
+                         // if this is the last matched card:
+                         BOOL shouldUpdateGrid = NO;
+                         if (!self.game.isDeckEmpty) {
+                             // deal more cards from the deck (2 or 3, according to the mode)
+                             shouldUpdateGrid = [self dealMoreCards:[self.game mode]];
+                         }
+                         else {
+                             // no more cards to deal, just update the grid
+                             shouldUpdateGrid = YES;
+                         }
+                         
+                         if (shouldUpdateGrid) {
+                             [self updateGrid];
+                         }
+                         
+                         // reset tags
+                         int tag = 0;
+                         for (PlayingCardView *cardView in self.cardViews)
                          {
-                             // animation: cards coming
-                             [UIView animateWithDuration:1
-                                                   delay:0.2*(2-order)
-                                                 options:UIViewAnimationOptionCurveEaseInOut
-                                              animations:^{
-                                                  if (!isDeckEmpty)
-                                                      // card coming from the deck
-                                                  { newCardView.frame = originalFrame; }
-                                                  else
-                                                      // (illusion) last card filling the hole
-                                                  { lastView.frame = originalFrame; }
-                                              } completion:^(BOOL finished){
-                                                  if (isDeckEmpty)
-                                                  {
-                                                      // actually the lastView won't be there, it was just
-                                                      // illusion. newCardView will be there. once made
-                                                      // the illusion, change it instantly!
-                                                      [lastView removeFromSuperview];
-                                                      newCardView.frame = originalFrame;
-                                                      // if there aren't other matched cards to verify, update grid
-                                                      if (order == total-1)
-                                                          [self updateGrid];
-                                                  }
-                                              }];
+                             cardView.tag = tag++;
                          }
                      }];
 }
@@ -174,6 +110,39 @@
 }
 
 // Specific functions:
+
+- (BOOL)dealMoreCards:(NSUInteger)amount
+{
+    NSArray *newCards = [[NSArray alloc] initWithArray:[self.game dealMoreCards:amount]];
+    if (!newCards) {
+        return NO;
+    }
+    
+    amount = [newCards count];
+    NSLog(@"dealing cards, got %d", amount);
+    if (amount == 0) {
+        return NO;
+    }
+    
+    int newViews = 0;
+    for (PlayingCard *card in newCards)
+    {
+        PlayingCardView *cardView;
+        cardView = [self createViewForCard:card];
+        cardView.tag = self.game.numberOfPresentCards - amount + newViews;
+        newViews++;
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                              action:@selector(touchCardView:)];
+        [cardView addGestureRecognizer:tap];
+        cardView.frame = self.deckFrame;
+        [self.cardViews addObject:cardView];
+        [[[self.cardViews firstObject] superview] addSubview:cardView];
+    }
+    
+    return YES;
+}
+
 - (IBAction)changeCardMode:(UISegmentedControl *)sender
 {
     [self.game changeMode];

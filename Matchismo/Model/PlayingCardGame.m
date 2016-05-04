@@ -24,34 +24,23 @@ static const int MATCH_BONUS = 4;
 static const int MATCH2_BONUS = 2;
 static const int COST_TO_CHOOSE = 1;
 
+- (instancetype)initWithCardCount:(NSUInteger)count {
+    if (!(self = [super initWithCardCount:count])) {
+        return nil;
+    }
+    self.mode = 2; // default = 2-card
+    return self;
+}
+
 - (PlayingCardDeck *)deck
 {
     if (!_deck) _deck = [[PlayingCardDeck alloc] init];
     return _deck;
 }
 
-- (PlayingCard *)dealRandomCardAtIndex:(NSUInteger)index
-{
-    PlayingCard *card = [self.deck drawRandomCard];
-    if(card) [self.cards insertObject:card atIndex:index];
-    return card;
-}
-
 - (PlayingCard *)lastCard
 {
     return [self.cards lastObject];
-}
-
-- (void)insertCard:(PlayingCard *)card atIndex:(NSUInteger)index
-{
-    if (index > [self.cards count]-1)
-    {
-        [self.cards addObject:card]; // puts in the end
-    }
-    else
-    {
-        [self.cards insertObject:card atIndex:index];
-    }
 }
 
 - (NSMutableArray *)cards
@@ -68,8 +57,27 @@ static const int COST_TO_CHOOSE = 1;
 
 - (void)changeMode
 {
-    // 2-card = 0, 3-card = 1
-    self.mode = !self.mode;
+    if (self.mode == 2) {
+        self.mode = 3;
+    }
+    else {
+        self.mode = 2;
+    }
+}
+
+// this method returns 0..amount cards
+- (NSArray *)dealMoreCards:(NSUInteger)amount
+{
+    NSMutableArray *newCards = [[NSMutableArray alloc] init];
+    for (int i = 0; i <= amount - 1; i++)
+    {
+        PlayingCard *card = [self.deck drawRandomCard];
+        if(card) {
+            [self.cards addObject:card];
+            [newCards addObject:card];
+        }
+    }
+    return newCards;
 }
 
 - (void)chooseCardAtIndex:(NSUInteger)index
@@ -94,7 +102,7 @@ static const int COST_TO_CHOOSE = 1;
             }
             // in 2-card mode, if one extra card was chosen, we're done
             // in 3-card mode, we need two extra cards, so we count until 2 to break the for-loop
-            if((!self.mode && [self.otherCards count]) || [self.otherCards count]==2)
+            if((self.mode == 2 && [self.otherCards count]) || [self.otherCards count]==2)
             {
                 break;
             }
@@ -102,17 +110,16 @@ static const int COST_TO_CHOOSE = 1;
         
         Card *otherCard = [self.otherCards firstObject];
         Card *anotherCard; // will be nil in 2-card mode, or if only two cards were chosen in 3-card mode:
-        if (self.mode && [self.otherCards count]==2)
+        if (self.mode == 3 && [self.otherCards count]==2)
             anotherCard = [self.otherCards lastObject];
         
-        if ((!self.mode && otherCard) || (otherCard && anotherCard))
+        if ((self.mode == 2 && otherCard) || (otherCard && anotherCard))
         {
             int matchScore = [card match:self.otherCards]; // "card" is compared against all the others
             // even in 3-card mode, only "card" is compared to the others, because the first 2 can be freely chosen by the player, so there's no point on giving points for their combination
             int matchScore1 = 0, matchScore2 = 0; // might be used for 1 mismatch + 1 match case in 3-card mode
-            if (
-                (matchScore == 2 || matchScore == 5 || matchScore == 8) // no mismatches in 3-card mode
-                || ((matchScore == 4 || matchScore == 1) && !self.mode)) // no mismatches in 2-card mode
+            if ((self.mode == 3 && (matchScore == 2 || matchScore == 5 || matchScore == 8)) || // no mismatches in 3-card mode
+                (self.mode == 2 && (matchScore == 4 || matchScore == 1))) // no mismatches in 2-card mode
             {
                 points = matchScore*MATCH_BONUS;
                 for (Card *everyCard in self.otherCards)
@@ -121,7 +128,7 @@ static const int COST_TO_CHOOSE = 1;
                 }
                 card.matched = YES;
             }
-            else if (matchScore && self.mode) // 1 mismatch + 1 match in 3-card mode
+            else if (matchScore && self.mode == 3) // 1 mismatch + 1 match in 3-card mode
             {
                 card.matched = YES;
                 // look individually for the mismatching card
@@ -150,7 +157,7 @@ static const int COST_TO_CHOOSE = 1;
                 {
                     everyCard.chosen = NO;
                 }
-                if(!self.mode) // 2-card mode
+                if (self.mode == 2)
                 {
                     points = -MISMATCH_PENALTY;
                 }

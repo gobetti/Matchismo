@@ -12,8 +12,8 @@
 @interface PlayingCardGame : Game
 
 @property (nonatomic, readonly) NSUInteger mode;
+
+- (NSArray *)dealMoreCards:(NSUInteger)amount;
 - (void)changeMode;
-- (PlayingCard *)dealRandomCardAtIndex:(NSUInteger)index;
 - (PlayingCard *)lastCard;
-- (void)insertCard:(PlayingCard *)card atIndex:(NSUInteger)index;
 @end
