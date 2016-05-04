@@ -77,14 +77,15 @@
                          {
                              // deal more cards from the deck if the current number is less than the starting one
                              if (self.game.numberOfPresentCards < self.numberOfStartingCards) {
-                                 shouldUpdateGrid = [self dealMoreCards];
+                                 shouldUpdateGrid = [self dealMoreCards:3];
                              }
                              self.dealButton.enabled = YES;
                              self.dealButton.alpha = 1.0;
                          }
-                         else
+                         // not using "else", because the deck could have been emptied after dealing more cards:
+                         if (self.game.isDeckEmpty)
                          {
-                             // the deck is empty, if there are no more sets, the game is over
+                             // if there are no more sets, the game is over
                              self.dealButton.enabled = NO;
                              self.dealButton.alpha = 0.5;
                              if (!self.game.isThereAnySet)
@@ -112,38 +113,6 @@
 
 // Specific functions:
 
-- (BOOL)dealMoreCards
-{
-    NSArray *newCards = [[NSArray alloc] initWithArray:[self.game dealMoreCards]];
-    if (!newCards) {
-        return NO;
-    }
-
-    int newViews = 0;
-    for (SetCard *card in newCards)
-    {
-        SetCardView *cardView;
-        cardView = [self createViewForCard:card];
-        // the game already has 3 more cards... so the indexes must be cards-3 (+1) (+1)
-        cardView.tag = self.game.numberOfPresentCards-3+newViews;
-        newViews++;
-        
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                              action:@selector(touchCardView:)];
-        [cardView addGestureRecognizer:tap];
-        cardView.frame = self.deckFrame;
-        [self.cardViews addObject:cardView];
-        [[[self.cardViews firstObject] superview] addSubview:cardView];
-    }
-    if (self.game.isDeckEmpty)
-    {
-        self.dealButton.enabled = NO;
-        self.dealButton.alpha = 0.5;
-    }
-    
-    return YES;
-}
-
 - (IBAction)touchDealButton:(UIButton *)sender
 {
     if (self.game.isThereAnySet)
@@ -151,7 +120,7 @@
         [self.game penalizeUnseenSet];
         [self updateUI];
     }
-    if ([self dealMoreCards]) {
+    if ([self dealMoreCards:3]) {
         [self updateGrid];
     }
 }

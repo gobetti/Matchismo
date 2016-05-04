@@ -19,5 +19,6 @@
 - (void)updateGrid;
 - (IBAction)touchRestartButton:(UIButton *)sender;
 - (void)touchCardView:(UITapGestureRecognizer *)gesture;
+- (BOOL)dealMoreCards:(NSUInteger)amount;
 
 @end

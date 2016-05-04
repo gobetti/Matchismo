@@ -65,21 +65,6 @@ static const int COST_TO_CHOOSE = 1;
     }
 }
 
-// this method returns 0..amount cards
-- (NSArray *)dealMoreCards:(NSUInteger)amount
-{
-    NSMutableArray *newCards = [[NSMutableArray alloc] init];
-    for (int i = 0; i <= amount - 1; i++)
-    {
-        PlayingCard *card = [self.deck drawRandomCard];
-        if(card) {
-            [self.cards addObject:card];
-            [newCards addObject:card];
-        }
-    }
-    return newCards;
-}
-
 - (void)chooseCardAtIndex:(NSUInteger)index
 {
     Card *card = [self cardAtIndex:index];

@@ -230,6 +230,38 @@
     }
 }
 
+- (BOOL)dealMoreCards:(NSUInteger)amount
+{
+    NSArray *newCards = [[NSArray alloc] initWithArray:[self.game dealMoreCards:amount]];
+    if (!newCards) {
+        return NO;
+    }
+    
+    amount = [newCards count];
+    NSLog(@"dealing cards, got %d", amount);
+    if (amount == 0) {
+        return NO;
+    }
+    
+    int newViews = 0;
+    for (Card *card in newCards)
+    {
+        CardView *cardView;
+        cardView = [self createViewForCard:card];
+        cardView.tag = self.game.numberOfPresentCards - amount + newViews;
+        newViews++;
+        
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                              action:@selector(touchCardView:)];
+        [cardView addGestureRecognizer:tap];
+        cardView.frame = self.deckFrame;
+        [self.cardViews addObject:cardView];
+        [[[self.cardViews firstObject] superview] addSubview:cardView];
+    }
+    
+    return YES;
+}
+
 - (void)updateMatchedCardView:(CardView *)cardView atIndex:(NSUInteger)index animationOrder:(NSUInteger)order totalOfMatchedCards:(NSUInteger)total
 {
     // to be implemented on concrete subclasses

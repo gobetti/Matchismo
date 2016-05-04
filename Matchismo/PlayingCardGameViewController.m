@@ -111,38 +111,6 @@
 
 // Specific functions:
 
-- (BOOL)dealMoreCards:(NSUInteger)amount
-{
-    NSArray *newCards = [[NSArray alloc] initWithArray:[self.game dealMoreCards:amount]];
-    if (!newCards) {
-        return NO;
-    }
-    
-    amount = [newCards count];
-    NSLog(@"dealing cards, got %d", amount);
-    if (amount == 0) {
-        return NO;
-    }
-    
-    int newViews = 0;
-    for (PlayingCard *card in newCards)
-    {
-        PlayingCardView *cardView;
-        cardView = [self createViewForCard:card];
-        cardView.tag = self.game.numberOfPresentCards - amount + newViews;
-        newViews++;
-        
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                              action:@selector(touchCardView:)];
-        [cardView addGestureRecognizer:tap];
-        cardView.frame = self.deckFrame;
-        [self.cardViews addObject:cardView];
-        [[[self.cardViews firstObject] superview] addSubview:cardView];
-    }
-    
-    return YES;
-}
-
 - (IBAction)changeCardMode:(UISegmentedControl *)sender
 {
     [self.game changeMode];

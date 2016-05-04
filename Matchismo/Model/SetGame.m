@@ -37,18 +37,6 @@ static const int COST_TO_CHOOSE = 1;
     return _deck;
 }
 
-- (NSArray *)dealMoreCards
-{
-    NSMutableArray *newCards = [[NSMutableArray alloc] init];
-    for (int i = 0; i <= 2; i++)
-    {
-        SetCard *card = [self.deck drawRandomCard];
-        if(card) [self.cards addObject:card];
-        [newCards addObject:card];
-    }
-    return [newCards count] == 3 ? newCards : nil;
-}
-
 - (void)chooseCardAtIndex:(NSUInteger)index
 {
     SetCard *card = [self cardAtIndex:index];

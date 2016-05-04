@@ -79,6 +79,21 @@
     // no base implementation
 }
 
+// this method returns 0..amount cards
+- (NSArray *)dealMoreCards:(NSUInteger)amount
+{
+    NSMutableArray *newCards = [[NSMutableArray alloc] init];
+    for (int i = 0; i <= amount - 1; i++)
+    {
+        Card *card = [self.deck drawRandomCard];
+        if(card) {
+            [self.cards addObject:card];
+            [newCards addObject:card];
+        }
+    }
+    return newCards;
+}
+
 - (void)updateInfoAddingPoints:(int)points append:(BOOL)append firstCard:(Card*)card1 secondCard:(Card*)card2 thirdCard:(Card*)card3
 {
     NSString *string;

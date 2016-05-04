@@ -11,7 +11,6 @@
 
 @interface SetGame : Game
 
-- (NSArray *)dealMoreCards;
 - (BOOL)isThereAnySet;
 - (void)penalizeUnseenSet;
 - (void)gameOver;

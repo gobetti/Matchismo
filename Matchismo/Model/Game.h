@@ -22,6 +22,7 @@
 - (void)chooseCardAtIndex:(NSUInteger)index;
 - (id)cardAtIndex:(NSUInteger)index;
 - (void)removeCard:(Card *)card;
+- (NSArray *)dealMoreCards:(NSUInteger)amount;
 - (BOOL)isDeckEmpty;
 
 - (void)updateInfoAddingPoints:(int)points append:(BOOL)append firstCard:(Card*)card1 secondCard:(Card*)card2 thirdCard:(Card*)card3;
