@@ -40,61 +40,64 @@ static const int COST_TO_CHOOSE = 1;
 - (void)chooseCardAtIndex:(NSUInteger)index
 {
     SetCard *card = [self cardAtIndex:index];
-    if (!card.isMatched) // only makes sense if card is not already matched
+    int points;
+    
+    // deselects card (flips it back) if it was already selected:
+    if (card.isChosen)
     {
-        int points;
-        // deselects card if it was already selected:
-        if (card.isChosen)
-        {
-            card.chosen = NO;
-            return; // then the function ends here!
-        }
-        // if it's a new card, continue...
-        for (SetCard *otherCard in self.cards)
-        {
-            // look for chosen and unmatched cards:
-            if (otherCard.isChosen && !otherCard.isMatched)
-            {
-                [self.otherCards addObject:otherCard]; // save them
-            }
-            // we need two extra cards, so we count until 2 to break the for-loop
-            if([self.otherCards count]==2)
-            {
-                break;
-                NSLog(@"still here?");
-            }
-        }
-        
-        card.chosen = YES; // show the front of the card
-        
-        // maybe find a way to put following block inside the same last If statement:
-        if ([self.otherCards count]==2)
-        {
-            SetCard *otherCard = [self.otherCards firstObject];
-            SetCard *anotherCard = [self.otherCards lastObject];
-            int matchScore = [card match:self.otherCards]; // "card" is compared against all the others
-            if (matchScore) // we have a set
-            {
-                points = 21 - self.numberOfPresentCards;
-                otherCard.matched = YES;
-                anotherCard.matched = YES;
-                card.matched = YES;
-            }
-            else
-            {
-                otherCard.chosen = NO;
-                anotherCard.chosen = NO;
-                card.chosen = NO;
-                points = -self.numberOfPresentCards;
-            }
-            self.score += points;
-            [self updateInfoAddingPoints:points append:NO firstCard:card secondCard:otherCard thirdCard:anotherCard];
-            [self updateHistory];
-        }
-        self.score -= COST_TO_CHOOSE;
-        [self.otherCards removeAllObjects]; // won't be used anymore -> cleared for next play
-        
+        card.chosen = NO;
+        return; // then the function ends here!
     }
+    
+    // the chosen card was not chosen before, moving on...
+    BOOL enoughChosenCards = NO;
+    for (SetCard *otherCard in self.cards)
+    {
+        // look for chosen and unmatched cards:
+        if (otherCard.isChosen && !otherCard.isMatched)
+        {
+            [self.otherCards addObject:otherCard]; // save them
+        }
+        // break the loop once we have the other two chosen cards
+        if ([self.otherCards count] == 2)
+        {
+            enoughChosenCards = YES;
+            break;
+        }
+    }
+    
+    card.chosen = YES; // show the front of the card
+    
+    if (!enoughChosenCards) {
+        return;
+    }
+    
+    // so, the user has selected enough cards to make a set. Let's take some action!
+    SetCard *otherCard = [self.otherCards firstObject];
+    SetCard *anotherCard = [self.otherCards lastObject];
+    // not checking the cards above for nil, we already know that otherCards has enough cards
+    
+    int matchScore = [card match:self.otherCards]; // "card" is compared against all the others
+    if (matchScore) // we have a set
+    {
+        points = 21 - self.numberOfPresentCards;
+        otherCard.matched = YES;
+        anotherCard.matched = YES;
+        card.matched = YES;
+    }
+    else
+    {
+        otherCard.chosen = NO;
+        anotherCard.chosen = NO;
+        card.chosen = NO;
+        points = -self.numberOfPresentCards;
+    }
+    
+    self.score += points;
+    [self updateInfoAddingPoints:points append:NO firstCard:card secondCard:otherCard thirdCard:anotherCard];
+    [self updateHistory];
+    self.score -= COST_TO_CHOOSE;
+    [self.otherCards removeAllObjects]; // won't be used anymore -> cleared for next play
 }
 
 - (BOOL)isThereAnySet

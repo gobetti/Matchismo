@@ -108,7 +108,6 @@
             cardView.frame.origin.x != frame.origin.x ||
             cardView.frame.origin.y != frame.origin.y)
         {
-            NSLog(@"animating card %d", cardIndex);
             [UIView animateWithDuration:0.5
                                   delay:0.05*cardIndex
                                 options:UIViewAnimationOptionCurveEaseInOut
