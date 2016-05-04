@@ -151,6 +151,8 @@
         [self.game penalizeUnseenSet];
         [self updateUI];
     }
-    [self dealMoreCards];
+    if ([self dealMoreCards]) {
+        [self updateGrid];
+    }
 }
 @end
