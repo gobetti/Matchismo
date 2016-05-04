@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-
 @interface GameViewController : UIViewController
+
 @property (nonatomic, retain, readonly) NSMutableArray *cardViews;
 
 @property (nonatomic) NSUInteger numberOfStartingCards;
@@ -17,7 +17,7 @@
 
 - (void)updateUI;
 - (void)updateGrid;
-- (id)createViewForCard:(id)card;
 - (IBAction)touchRestartButton:(UIButton *)sender;
 - (void)touchCardView:(UITapGestureRecognizer *)gesture;
+
 @end

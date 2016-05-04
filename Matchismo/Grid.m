@@ -22,9 +22,9 @@
 {
     if (self.resolved) return;    // already valid, nothing to do
 
-    double overallWidth = ABS(self.size.width);
-    double overallHeight = ABS(self.size.height);
-    double aspectRatio = ABS(self.cellAspectRatio);
+    double overallWidth = self.size.width;
+    double overallHeight = self.size.height;
+    double aspectRatio = self.cellAspectRatio;
 
     double minCellWidth = self.minCellWidth;
     double minCellHeight = self.minCellHeight;
@@ -34,8 +34,8 @@
     BOOL flipped = NO;
     if (aspectRatio > 1) {
         flipped = YES;
-        overallHeight = ABS(self.size.width);
-        overallWidth = ABS(self.size.height);
+        overallHeight = self.size.width;
+        overallWidth = self.size.height;
         aspectRatio = 1.0/aspectRatio;
         minCellWidth = self.minCellHeight;
         minCellHeight = self.minCellWidth;
@@ -74,7 +74,7 @@
             {
                 if (overallHeight >= rowCount * cellHeight)
                 {
-                    // conditions are all fine, we just need to set it at maximal specified dimensions if higher...
+                    // conditions are all fine, we just need to floor the dimensions to the max ones specified
                     if (maxCellWidth && maxCellHeight)
                     {
                         if (cellWidth > maxCellWidth || cellHeight > maxCellHeight)
@@ -115,11 +115,11 @@
         }
         else
         {
-            // increase rows and/or columns...
+            // increase number of rows and/or columns...
             if ((self.minimumNumberOfCells <= (rowCount+1) * columnCount) &&
                 (self.minimumNumberOfCells <= rowCount * (columnCount + 1)))
             {
-                // both increases will work, choose the lowest product.
+                // any increase (rowCount or columnCount) will work, choose the lowest product.
                 if ((rowCount+1) * columnCount < rowCount * (columnCount + 1))
                 {
                     rowCount++;
@@ -131,22 +131,24 @@
             }
             else if (self.minimumNumberOfCells <= (rowCount+1) * columnCount)
             {
-                // more rows
+                // needs more rows
                 rowCount++;
             }
             else if (self.minimumNumberOfCells <= rowCount * (columnCount + 1))
             {
-                // more columns
+                // needs more columns
                 columnCount++;
             }
             else
             {
-                // more rows and more columns
+                // needs more rows and more columns
                 rowCount++;
                 columnCount++;
             }
         }
     }
+    
+    NSLog(@"rows: %d, columns: %d, width: %f, height: %f", rowCount, columnCount, cellWidth, cellHeight);
 }
 
 - (BOOL)inputsAreValid
@@ -155,7 +157,7 @@
     return self.resolved;
 }
 
-- (CGRect)frameOfCellAtRow:(NSUInteger)row inColumn:(NSUInteger)column
+- (CGRect)frameOfCellAtRow:(NSUInteger)row andColumn:(NSUInteger)column
 {
     CGRect frame = CGRectMake(0, 0, self.cellSize.width, self.cellSize.height);
     frame.origin.x += column * self.cellSize.width + self.dxToCenter;
@@ -163,14 +165,20 @@
     return frame;
 }
 
+- (CGRect)frameOfCellAtIndex:(NSUInteger)index
+{
+    return [self frameOfCellAtRow:index / self.columnCount
+                 andColumn:index % self.columnCount];
+}
+
 - (instancetype)initWithSize:(CGSize)size andCellAspectRatio:(CGFloat)aspectRatio toContainAtLeast:(NSUInteger)minimumNumberOfCells
 {
     if (!(self = [super init]))
         return nil;
     
-    self->_size = size;
-    self->_cellAspectRatio = aspectRatio;
-    self->_minimumNumberOfCells = minimumNumberOfCells;
+    _size = size;
+    _cellAspectRatio = aspectRatio;
+    _minimumNumberOfCells = minimumNumberOfCells;
     
     return self;
 }
@@ -189,7 +197,7 @@
 
 - (void)setCellAspectRatio:(CGFloat)cellAspectRatio
 {
-    if (ABS(cellAspectRatio) != ABS(_cellAspectRatio)) self.resolved = NO;
+    if (cellAspectRatio != _cellAspectRatio) self.resolved = NO;
     _cellAspectRatio = cellAspectRatio;
 }
 

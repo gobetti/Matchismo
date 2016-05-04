@@ -43,7 +43,7 @@
     return view;
 }
 
-- (void)updateView:(UIView *)view forCard:(Card *)card
+- (void)updateView:(CardView *)view forCard:(Card *)card
 {
     if (![card isKindOfClass:[SetCard class]]) return;
     if (![view isKindOfClass:[SetCardView class]]) return;
@@ -58,28 +58,33 @@
     setCardView.alpha = setCard.chosen ? 0.6 : 1.0;
 }
 
-- (void)updateMatchedCardView:(UIView *)matchedCardView atIndex:(NSUInteger)index order:(NSUInteger)order total:(NSUInteger)total
+- (void)updateMatchedCardView:(CardView *)cardView atIndex:(NSUInteger)index animationOrder:(NSUInteger)order totalOfMatchedCards:(NSUInteger)total
 {
     // animation: cards going away
     [UIView animateWithDuration:1
                           delay:0.2*(1+order)
                         options:UIViewAnimationOptionCurveEaseInOut
-                     animations:^{
-                         matchedCardView.frame = self.deckFrame;
-                     } completion:^(BOOL finished){
-                         [matchedCardView removeFromSuperview];
-                         // if there aren't other matched cards to verify, update grid and enable Deal button
-                         if (order == total-1)
+                     animations:^{ cardView.frame = self.deckFrame; }
+                     completion:^(BOOL finished){
+                         [cardView removeFromSuperview];
+                         if (order < total-1) {
+                             return;
+                         }
+                         
+                         // if this is the last matched card:
                          {
                              if (!self.game.isDeckEmpty)
                              {
-                                 if (self.game.numberOfPresentCards < 12)
-                                     [self touchDealButton:nil];
+                                 // deal more cards from the deck
+                                 if (self.game.numberOfPresentCards < self.numberOfStartingCards) {
+                                     [self dealMoreCards];
+                                 }
                                  self.dealButton.enabled = YES;
                                  self.dealButton.alpha = 1.0;
                              }
                              else
                              {
+                                 // the deck is empty, if there are no more sets, the game is over
                                  self.dealButton.enabled = NO;
                                  self.dealButton.alpha = 0.5;
                                  if (!self.game.isThereAnySet)
@@ -88,29 +93,22 @@
                                      [self updateUI];
                                  }
                              }
+                             
+                             // reset tags
                              int tag = 0;
                              for (SetCardView *cardView in self.cardViews)
                              {
-                                 // reset tags
                                  cardView.tag = tag++;
                              }
-                             [self updateGrid];
                          }
                      }];
     
 }
 
 // Specific functions:
-- (IBAction)touchDealButton:(UIButton *)sender
+
+- (void)dealMoreCards
 {
-    if (sender && self.game.isThereAnySet)
-    {
-        // when a set is found, we deal 3 more cards automatically
-        // then this method will be called without a sender...
-        // and thus the player won't be penalized ;)
-        [self.game penalizeUnseenSet];
-        [self updateUI];
-    }
     NSArray *newCards = [[NSArray alloc] initWithArray:[self.game dealMoreCards]];
     if (newCards)
     {
@@ -137,5 +135,15 @@
         }
         [self updateGrid];
     }
+}
+
+- (IBAction)touchDealButton:(UIButton *)sender
+{
+    if (self.game.isThereAnySet)
+    {
+        [self.game penalizeUnseenSet];
+        [self updateUI];
+    }
+    [self dealMoreCards];
 }
 @end

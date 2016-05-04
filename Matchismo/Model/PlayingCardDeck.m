@@ -20,7 +20,6 @@
     {
         for (NSString *suit in [PlayingCard validSuits])
         {
-            // for (NSString *rank in [PlayingCard rankStrings]) (then make rankStrings public)
             for (NSUInteger rank = 1; rank <= [PlayingCard maxRank]; rank++)
             {
                 PlayingCard *card = [[PlayingCard alloc] init];
