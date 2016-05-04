@@ -58,57 +58,33 @@
     setCardView.alpha = setCard.chosen ? 0.6 : 1.0;
 }
 
-- (void)updateMatchedCardView:(CardView *)cardView atIndex:(NSUInteger)index animationOrder:(NSUInteger)order totalOfMatchedCards:(NSUInteger)total
-{
-    // animation: cards going away
-    [UIView animateWithDuration:1
-                          delay:0.2*(1+order)
-                        options:UIViewAnimationOptionCurveEaseInOut
-                     animations:^{ cardView.frame = self.deckFrame; }
-                     completion:^(BOOL finished){
-                         [cardView removeFromSuperview];
-                         if (order < total-1) {
-                             return;
-                         }
-                         
-                         // if this is the last matched card:
-                         BOOL shouldUpdateGrid = NO;
-                         if (!self.game.isDeckEmpty)
-                         {
-                             // deal more cards from the deck if the current number is less than the starting one
-                             if (self.game.numberOfPresentCards < self.numberOfStartingCards) {
-                                 shouldUpdateGrid = [self dealMoreCards:3];
-                             }
-                             self.dealButton.enabled = YES;
-                             self.dealButton.alpha = 1.0;
-                         }
-                         // not using "else", because the deck could have been emptied after dealing more cards:
-                         if (self.game.isDeckEmpty)
-                         {
-                             // if there are no more sets, the game is over
-                             self.dealButton.enabled = NO;
-                             self.dealButton.alpha = 0.5;
-                             if (!self.game.isThereAnySet)
-                             {
-                                 [self.game gameOver];
-                                 [self updateUI];
-                             }
-                             else {
-                                 shouldUpdateGrid = YES;
-                             }
-                         }
-                         
-                         if (shouldUpdateGrid) {
-                             [self updateGrid];
-                         }
-                         
-                         // reset tags
-                         int tag = 0;
-                         for (SetCardView *cardView in self.cardViews)
-                         {
-                             cardView.tag = tag++;
-                         }
-                     }];
+- (BOOL)onAnimationCompletionShouldUpdateGridWhenDeckIsNotEmpty {
+    self.dealButton.enabled = YES;
+    self.dealButton.alpha = 1.0;
+    
+    // deal more cards from the deck if the current number is less than the starting one
+    if (self.game.numberOfPresentCards < self.numberOfStartingCards) {
+        return [self dealMoreCards:3];
+    }
+    else {
+        return NO;
+    }
+}
+
+- (BOOL)onAnimationCompletionShouldUpdateGridWhenDeckIsEmpty {
+    self.dealButton.enabled = NO;
+    self.dealButton.alpha = 0.5;
+    
+    // if there are no more sets, the game is over
+    if (!self.game.isThereAnySet)
+    {
+        [self.game gameOver];
+        [self updateUI];
+        return NO;
+    }
+    else {
+        return YES;
+    }
 }
 
 // Specific functions:
