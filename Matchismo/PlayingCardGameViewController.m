@@ -55,41 +55,14 @@
     playingCardView.faceUp = playingCard.chosen;
 }
 
-- (void)updateMatchedCardView:(CardView *)cardView atIndex:(NSUInteger)index animationOrder:(NSUInteger)order totalOfMatchedCards:(NSUInteger)total
-{
-    // animation: cards going away
-    [UIView animateWithDuration:1
-                          delay:0.2*(1+order)
-                        options:UIViewAnimationOptionCurveEaseInOut
-                     animations:^{ cardView.frame = self.deckFrame; }
-                     completion:^(BOOL finished){
-                         [cardView removeFromSuperview];
-                         if (order < total-1) {
-                             return;
-                         }
-                         
-                         // if this is the last matched card:
-                         BOOL shouldUpdateGrid = NO;
-                         if (!self.game.isDeckEmpty) {
-                             // deal more cards from the deck (2 or 3, according to the mode)
-                             shouldUpdateGrid = [self dealMoreCards:[self.game mode]];
-                         }
-                         else {
-                             // no more cards to deal, just update the grid
-                             shouldUpdateGrid = YES;
-                         }
-                         
-                         if (shouldUpdateGrid) {
-                             [self updateGrid];
-                         }
-                         
-                         // reset tags
-                         int tag = 0;
-                         for (PlayingCardView *cardView in self.cardViews)
-                         {
-                             cardView.tag = tag++;
-                         }
-                     }];
+- (BOOL)onAnimationCompletionShouldUpdateGridWhenDeckIsNotEmpty {
+    // deal more cards from the deck (2 or 3, according to the mode)
+    return [self dealMoreCards:[self.game mode]];
+}
+
+- (BOOL)onAnimationCompletionShouldUpdateGridWhenDeckIsEmpty {
+    // no more cards to deal, just update the grid
+    return YES;
 }
 
 - (IBAction)touchRestartButton:(UIButton *)sender
@@ -110,38 +83,6 @@
 }
 
 // Specific functions:
-
-- (BOOL)dealMoreCards:(NSUInteger)amount
-{
-    NSArray *newCards = [[NSArray alloc] initWithArray:[self.game dealMoreCards:amount]];
-    if (!newCards) {
-        return NO;
-    }
-    
-    amount = [newCards count];
-    NSLog(@"dealing cards, got %d", amount);
-    if (amount == 0) {
-        return NO;
-    }
-    
-    int newViews = 0;
-    for (PlayingCard *card in newCards)
-    {
-        PlayingCardView *cardView;
-        cardView = [self createViewForCard:card];
-        cardView.tag = self.game.numberOfPresentCards - amount + newViews;
-        newViews++;
-        
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                                              action:@selector(touchCardView:)];
-        [cardView addGestureRecognizer:tap];
-        cardView.frame = self.deckFrame;
-        [self.cardViews addObject:cardView];
-        [[[self.cardViews firstObject] superview] addSubview:cardView];
-    }
-    
-    return YES;
-}
 
 - (IBAction)changeCardMode:(UISegmentedControl *)sender
 {

@@ -13,7 +13,6 @@
 
 @property (nonatomic, readonly) NSUInteger mode;
 
-- (NSArray *)dealMoreCards:(NSUInteger)amount;
 - (void)changeMode;
-- (PlayingCard *)lastCard;
+
 @end
