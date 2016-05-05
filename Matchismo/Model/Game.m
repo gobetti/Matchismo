@@ -13,6 +13,7 @@
 @property (strong, nonatomic, readwrite) NSMutableAttributedString *history; // should be strong for segue
 // private:
 @property (strong, nonatomic) NSMutableArray *cards;
+@property (nonatomic, strong) NSMutableSet *chosenCards;
 @property (strong, nonatomic) Deck *deck;
 @end
 
@@ -76,7 +77,80 @@
 
 - (void)chooseCardAtIndex:(NSUInteger)index
 {
-    // no base implementation
+    Card *card = [self cardAtIndex:index];
+    // deselects card (flips it back) if it was already selected:
+    if (card.isChosen)
+    {
+        card.chosen = NO;
+        [self.chosenCards removeObject:card];
+        return; // then the function ends here!
+    }
+    
+    // the chosen card was not chosen before, moving on...
+    card.chosen = YES; // show the front of the card
+    [self.chosenCards addObject:card];
+    
+    if ([self.chosenCards count] != self.amountOfCardsToChoose) {
+        return;
+    }
+    
+    // so, the user has selected enough cards to make a set. Let's take some action!
+    NSMutableArray *otherCards = [NSMutableArray arrayWithArray:[self.chosenCards allObjects]];
+    [otherCards removeObject:card]; // all except the card that was chosen for last
+    int matchScore = [card match:otherCards]; // "card" is compared against all the others
+    
+    int points = 0;
+    if (matchScore) {
+        points = [self pointsWhenMatchedWithLastChosenCard:card andScored:matchScore];
+    }
+    else {
+        points = [self pointsWhenNoMatchesWithLastChosenCard:card];
+    }
+    
+    self.score += points;
+    
+    Card *otherCard = [otherCards firstObject];
+    Card *anotherCard = nil;
+    if ([otherCards count] == 2) { // always true for the Set game
+        anotherCard = [otherCards lastObject];
+    }
+    [self updateInfoAddingPoints:points append:NO firstCard:card secondCard:otherCard thirdCard:anotherCard];
+    
+    [self updateHistory];
+    self.score -= self.cardChoosingCost;
+    
+    // remove card from the chosenCards if it is not chosen anymore, or if it was matched:
+    NSMutableArray *notChosenAnymore = [[NSMutableArray alloc] init];
+    for (Card *chosenCard in self.chosenCards) {
+        if (!chosenCard.isChosen || chosenCard.isMatched) {
+            [notChosenAnymore addObject:chosenCard];
+        }
+    }
+    for (Card *unchosenCard in notChosenAnymore) {
+        [self.chosenCards removeObject:unchosenCard];
+    }
+}
+
+- (NSUInteger)amountOfCardsToChoose {
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
+                                 userInfo:nil];
+}
+
+- (NSInteger)pointsWhenMatchedWithLastChosenCard:(Card*)card andScored:(NSInteger)matchScore {
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
+                                 userInfo:nil];
+}
+
+- (NSInteger)pointsWhenNoMatchesWithLastChosenCard:(Card*)card {
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
+                                 userInfo:nil];
+}
+
+- (NSUInteger)cardChoosingCost {
+    return 1;
 }
 
 // this method returns 0..amount cards

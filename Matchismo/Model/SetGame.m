@@ -11,25 +11,11 @@
 
 @interface SetGame()
 @property (nonatomic, strong) NSMutableArray *cards;
-@property (nonatomic, strong) NSMutableArray *otherCards;
+@property (nonatomic, strong) NSMutableSet *chosenCards;
 @property (strong, nonatomic) SetDeck *deck; // will hold to this deck
 @end
 
 @implementation SetGame
-
-static const int COST_TO_CHOOSE = 1;
-
-- (NSMutableArray *)cards
-{
-    if (!_cards) _cards = [[NSMutableArray alloc] init];
-    return _cards;
-}
-
-- (NSMutableArray *)otherCards
-{
-    if (!_otherCards) _otherCards = [NSMutableArray arrayWithCapacity:2];
-    return _otherCards;
-}
 
 - (SetDeck *)deck
 {
@@ -37,67 +23,37 @@ static const int COST_TO_CHOOSE = 1;
     return _deck;
 }
 
-- (void)chooseCardAtIndex:(NSUInteger)index
+- (NSMutableArray *)cards
 {
-    SetCard *card = [self cardAtIndex:index];
-    int points;
-    
-    // deselects card (flips it back) if it was already selected:
-    if (card.isChosen)
-    {
-        card.chosen = NO;
-        return; // then the function ends here!
+    if (!_cards) _cards = [[NSMutableArray alloc] init];
+    return _cards;
+}
+
+- (NSMutableSet *)chosenCards
+{
+    if (!_chosenCards) _chosenCards = [[NSMutableSet alloc] init];
+    return _chosenCards;
+}
+
+- (NSUInteger)amountOfCardsToChoose {
+    return 3;
+}
+
+- (NSInteger)pointsWhenMatchedWithLastChosenCard:(Card*)card andScored:(NSInteger)matchScore {
+    for (Card *everyCard in self.chosenCards) {
+        everyCard.matched = YES;
     }
     
-    // the chosen card was not chosen before, moving on...
-    BOOL enoughChosenCards = NO;
-    for (SetCard *otherCard in self.cards)
-    {
-        // look for chosen and unmatched cards:
-        if (otherCard.isChosen && !otherCard.isMatched)
-        {
-            [self.otherCards addObject:otherCard]; // save them
-        }
-        // break the loop once we have the other two chosen cards
-        if ([self.otherCards count] == 2)
-        {
-            enoughChosenCards = YES;
-            break;
-        }
+    return 21 - self.numberOfPresentCards;
+}
+
+- (NSInteger)pointsWhenNoMatchesWithLastChosenCard:(Card*)card {
+    // flip back all the chosen cards:
+    for (Card *everyCard in self.chosenCards) {
+        everyCard.chosen = NO;
     }
     
-    card.chosen = YES; // show the front of the card
-    
-    if (!enoughChosenCards) {
-        return;
-    }
-    
-    // so, the user has selected enough cards to make a set. Let's take some action!
-    SetCard *otherCard = [self.otherCards firstObject];
-    SetCard *anotherCard = [self.otherCards lastObject];
-    // not checking the cards above for nil, we already know that otherCards has enough cards
-    
-    int matchScore = [card match:self.otherCards]; // "card" is compared against all the others
-    if (matchScore) // we have a set
-    {
-        points = 21 - self.numberOfPresentCards;
-        otherCard.matched = YES;
-        anotherCard.matched = YES;
-        card.matched = YES;
-    }
-    else
-    {
-        otherCard.chosen = NO;
-        anotherCard.chosen = NO;
-        card.chosen = NO;
-        points = -self.numberOfPresentCards;
-    }
-    
-    self.score += points;
-    [self updateInfoAddingPoints:points append:NO firstCard:card secondCard:otherCard thirdCard:anotherCard];
-    [self updateHistory];
-    self.score -= COST_TO_CHOOSE;
-    [self.otherCards removeAllObjects]; // won't be used anymore -> cleared for next play
+    return -self.numberOfPresentCards;
 }
 
 - (BOOL)isThereAnySet

@@ -14,5 +14,5 @@
 @property (nonatomic, readonly) NSUInteger mode;
 
 - (void)changeMode;
-- (PlayingCard *)lastCard;
+
 @end
