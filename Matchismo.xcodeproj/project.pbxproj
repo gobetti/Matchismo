@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9C90F5E71CDD5B9100B30AF1 /* NSException+NotImplemented.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C90F5E61CDD5B9100B30AF1 /* NSException+NotImplemented.m */; };
 		D4215CFE189D8F0A00D47A90 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4215CFD189D8F0A00D47A90 /* Foundation.framework */; };
 		D4215D00189D8F0A00D47A90 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4215CFF189D8F0A00D47A90 /* CoreGraphics.framework */; };
 		D4215D02189D8F0A00D47A90 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4215D01189D8F0A00D47A90 /* UIKit.framework */; };
@@ -50,6 +51,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9C90F5E51CDD59B100B30AF1 /* NSException+NotImplemented.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSException+NotImplemented.h"; sourceTree = "<group>"; };
+		9C90F5E61CDD5B9100B30AF1 /* NSException+NotImplemented.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSException+NotImplemented.m"; sourceTree = "<group>"; };
 		D4215CFA189D8F0A00D47A90 /* Matchismo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Matchismo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4215CFD189D8F0A00D47A90 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		D4215CFF189D8F0A00D47A90 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -213,6 +216,8 @@
 				D4728A3018A2C4820003432A /* GameHistoryViewController.m */,
 				D4B428E718B18EC30071D3AF /* CardView.h */,
 				D4B428E818B18EC30071D3AF /* CardView.m */,
+				9C90F5E51CDD59B100B30AF1 /* NSException+NotImplemented.h */,
+				9C90F5E61CDD5B9100B30AF1 /* NSException+NotImplemented.m */,
 			);
 			name = Super;
 			sourceTree = "<group>";
@@ -405,6 +410,7 @@
 				D4B92638189DA70A00B0D523 /* Card.m in Sources */,
 				D4728A3118A2C4820003432A /* GameHistoryViewController.m in Sources */,
 				D4AA8FA318A813CD00AD289F /* SetGameViewController.m in Sources */,
+				9C90F5E71CDD5B9100B30AF1 /* NSException+NotImplemented.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
