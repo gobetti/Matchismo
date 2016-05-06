@@ -20,7 +20,18 @@
 
 - (PlayingCardGame *)game
 {
-    if (!_game) _game = [[PlayingCardGame alloc] initWithCardCount:self.numberOfStartingCards];
+    if (!_game) {
+        _game = [[PlayingCardGame alloc] initWithCardCount:self.numberOfStartingCards];
+        
+        // if 3-card mode is selected on restart,
+        if ([self.modeSelector selectedSegmentIndex]) {
+            [self.game changeMode];
+        }
+        
+        // ensures that mode changing is enabled when the game (re)starts:
+        [self.modeSelector setEnabled:YES forSegmentAtIndex:0];
+        [self.modeSelector setEnabled:YES forSegmentAtIndex:1];
+    }
     return _game;
 }
 
@@ -65,19 +76,11 @@
     return YES;
 }
 
-- (IBAction)touchRestartButton:(UIButton *)sender
-{
-    // if 3-card mode is selected on restart,
-    if ([self.modeSelector selectedSegmentIndex])
-        [self.game changeMode];
-    // re-enable mode changing:
-    [self.modeSelector setEnabled:YES forSegmentAtIndex:![self.modeSelector selectedSegmentIndex]];
-    
-    [super touchRestartButton:nil];
-}
-
 - (void)touchCardView:(UITapGestureRecognizer *)gesture
 {
+    // currently, there are only two indexes: 0 and 1.
+    // when index 1 is selected and a card is chosen, disable index 0, and vice-versa.
+    // it will be re-enabled only once the game is restarted.
     [self.modeSelector setEnabled:NO forSegmentAtIndex:![self.modeSelector selectedSegmentIndex]];
     [super touchCardView:gesture];
 }

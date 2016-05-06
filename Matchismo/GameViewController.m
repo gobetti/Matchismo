@@ -11,6 +11,7 @@
 #import "GameHistoryViewController.h"
 #import "Grid.h"
 #import "CardView.h"
+#import "NSException+NotImplemented.h"
 
 @interface GameViewController ()
 @property (strong, nonatomic) Game *game;
@@ -296,30 +297,38 @@
                      }];
 }
 
-- (BOOL)onAnimationCompletionShouldUpdateGridWhenDeckIsNotEmpty {
-    // to be implemented on concrete subclasses
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
-                                 userInfo:nil];
+#pragma mark - Abstract methods: implementation required on subclasses
+
+- (NSUInteger) numberOfStartingCards
+{
+    @throw [NSException notImplementedException];
 }
 
-- (BOOL)onAnimationCompletionShouldUpdateGridWhenDeckIsEmpty {
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
-                                 userInfo:nil];
+- (UIViewAnimationOptions) animationOptions
+{
+    @throw [NSException notImplementedException];
 }
 
+- (BOOL)onAnimationCompletionShouldUpdateGridWhenDeckIsNotEmpty
+{
+    @throw [NSException notImplementedException];
+}
+
+- (BOOL)onAnimationCompletionShouldUpdateGridWhenDeckIsEmpty
+{
+    @throw [NSException notImplementedException];
+}
+
+// associates a card to a view
 - (id)createViewForCard:(id)card
 {
-    // to be implemented on concrete subclasses
-    // associates a card to a view
-    return nil;
+    @throw [NSException notImplementedException];
 }
 
+// shows the card face in its respective view
 - (void)updateView:(CardView *)view forCard:(Card *)card
 {
-    // to be implemented on concrete subclasses
-    // shows the card face in its respective view
+    @throw [NSException notImplementedException];
 }
 
 @end

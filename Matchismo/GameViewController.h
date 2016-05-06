@@ -9,16 +9,20 @@
 #import <UIKit/UIKit.h>
 @interface GameViewController : UIViewController
 
-@property (nonatomic, retain, readonly) NSMutableArray *cardViews;
-
-@property (nonatomic) NSUInteger numberOfStartingCards;
-@property (nonatomic) CGRect deckFrame;
-@property (assign) UIViewAnimationOptions animationOptions;
-
+// The methods below should probably not be overridden by subclasses.
+// If really necessary, then be sure to call super.
 - (void)updateUI;
 - (void)updateGrid;
 - (IBAction)touchRestartButton:(UIButton *)sender;
 - (void)touchCardView:(UITapGestureRecognizer *)gesture;
 - (BOOL)dealMoreCards:(NSUInteger)amount;
+
+// The following (private) methods must be overridden by subclasses:
+//- (NSUInteger) numberOfStartingCards;
+//- (UIViewAnimationOptions) animationOptions;
+//- (BOOL)onAnimationCompletionShouldUpdateGridWhenDeckIsNotEmpty;
+//- (BOOL)onAnimationCompletionShouldUpdateGridWhenDeckIsEmpty;
+//- (id)createViewForCard:(id)card;
+//- (void)updateView:(CardView *)view forCard:(Card *)card;
 
 @end
