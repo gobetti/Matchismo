@@ -130,6 +130,106 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9C90F5E81CDD603D00B30AF1 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				D45114EA18AFB4A500E3BEEB /* Grid.h */,
+				D45114EB18AFB4A500E3BEEB /* Grid.m */,
+				9C90F5E51CDD59B100B30AF1 /* NSException+NotImplemented.h */,
+				9C90F5E61CDD5B9100B30AF1 /* NSException+NotImplemented.m */,
+			);
+			name = Helpers;
+			sourceTree = "<group>";
+		};
+		9C90F5E91CDD604900B30AF1 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		9C90F5EA1CDD605700B30AF1 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				D4F9ECEC18AE45B900C86810 /* GameViewController.h */,
+				D4F9ECED18AE45B900C86810 /* GameViewController.m */,
+				D4728A2F18A2C4820003432A /* GameHistoryViewController.h */,
+				D4728A3018A2C4820003432A /* GameHistoryViewController.m */,
+			);
+			name = ViewController;
+			sourceTree = "<group>";
+		};
+		9C90F5EB1CDD608400B30AF1 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				D4B428E718B18EC30071D3AF /* CardView.h */,
+				D4B428E818B18EC30071D3AF /* CardView.m */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		9C90F5EC1CDD60A100B30AF1 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				D4B9263A189DA87600B0D523 /* PlayingCard.h */,
+				D4B9263B189DA87600B0D523 /* PlayingCard.m */,
+				D4B92640189DACF300B0D523 /* PlayingCardDeck.h */,
+				D4B92641189DACF300B0D523 /* PlayingCardDeck.m */,
+				D43DE5A6189DBFD400CEF24D /* PlayingCardGame.h */,
+				D43DE5A7189DBFD400CEF24D /* PlayingCardGame.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		9C90F5ED1CDD60B100B30AF1 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				D4215D12189D8F0A00D47A90 /* PlayingCardGameViewController.h */,
+				D4215D13189D8F0A00D47A90 /* PlayingCardGameViewController.m */,
+			);
+			name = ViewController;
+			sourceTree = "<group>";
+		};
+		9C90F5EE1CDD60B800B30AF1 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				D45114E718AFB07700E3BEEB /* PlayingCardView.h */,
+				D45114E818AFB07700E3BEEB /* PlayingCardView.m */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		9C90F5EF1CDD60C300B30AF1 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				D4F63A2518A30DCA00FE4067 /* SetCard.h */,
+				D4F63A2618A30DCA00FE4067 /* SetCard.m */,
+				D4F63A2218A30D2800FE4067 /* SetDeck.h */,
+				D4F63A2318A30D2800FE4067 /* SetDeck.m */,
+				D4AA8FA418A8143000AD289F /* SetGame.h */,
+				D4AA8FA518A8143000AD289F /* SetGame.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		9C90F5F01CDD60C700B30AF1 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				D46DB56418B15DAC0095567F /* SetCardView.h */,
+				D46DB56518B15DAC0095567F /* SetCardView.m */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		9C90F5F11CDD60CA00B30AF1 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				D4AA8FA118A813CD00AD289F /* SetGameViewController.h */,
+				D4AA8FA218A813CD00AD289F /* SetGameViewController.m */,
+			);
+			name = ViewController;
+			sourceTree = "<group>";
+		};
 		D4215CF1189D8F0A00D47A90 = {
 			isa = PBXGroup;
 			children = (
@@ -167,7 +267,6 @@
 				D45114ED18AFBDE400E3BEEB /* Super */,
 				D4F9ECF218AE516900C86810 /* PlayingCard */,
 				D4F9ECF318AE517900C86810 /* Set */,
-				D4B92639189DA78500B0D523 /* Model */,
 				D4215D15189D8F0A00D47A90 /* Images.xcassets */,
 				D4215D04189D8F0A00D47A90 /* Supporting Files */,
 			);
@@ -208,50 +307,26 @@
 		D45114ED18AFBDE400E3BEEB /* Super */ = {
 			isa = PBXGroup;
 			children = (
-				D45114EA18AFB4A500E3BEEB /* Grid.h */,
-				D45114EB18AFB4A500E3BEEB /* Grid.m */,
-				D4F9ECEC18AE45B900C86810 /* GameViewController.h */,
-				D4F9ECED18AE45B900C86810 /* GameViewController.m */,
-				D4728A2F18A2C4820003432A /* GameHistoryViewController.h */,
-				D4728A3018A2C4820003432A /* GameHistoryViewController.m */,
-				D4B428E718B18EC30071D3AF /* CardView.h */,
-				D4B428E818B18EC30071D3AF /* CardView.m */,
-				9C90F5E51CDD59B100B30AF1 /* NSException+NotImplemented.h */,
-				9C90F5E61CDD5B9100B30AF1 /* NSException+NotImplemented.m */,
-			);
-			name = Super;
-			sourceTree = "<group>";
-		};
-		D45114EE18AFBDF100E3BEEB /* Super */ = {
-			isa = PBXGroup;
-			children = (
+				9C90F5E91CDD604900B30AF1 /* Model */,
 				D4B92636189DA70A00B0D523 /* Card.h */,
 				D4B92637189DA70A00B0D523 /* Card.m */,
 				D4B9263D189DAA5700B0D523 /* Deck.h */,
 				D4B9263E189DAA5700B0D523 /* Deck.m */,
 				D4F9ECEF18AE46D100C86810 /* Game.h */,
 				D4F9ECF018AE46D100C86810 /* Game.m */,
+				9C90F5EA1CDD605700B30AF1 /* ViewController */,
+				9C90F5EB1CDD608400B30AF1 /* View */,
+				9C90F5E81CDD603D00B30AF1 /* Helpers */,
 			);
 			name = Super;
-			sourceTree = "<group>";
-		};
-		D4B92639189DA78500B0D523 /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				D45114EE18AFBDF100E3BEEB /* Super */,
-				D4F9ECF418AE518C00C86810 /* PlayingCard */,
-				D4F9ECF518AE519B00C86810 /* Set */,
-			);
-			name = Model;
 			sourceTree = "<group>";
 		};
 		D4F9ECF218AE516900C86810 /* PlayingCard */ = {
 			isa = PBXGroup;
 			children = (
-				D4215D12189D8F0A00D47A90 /* PlayingCardGameViewController.h */,
-				D4215D13189D8F0A00D47A90 /* PlayingCardGameViewController.m */,
-				D45114E718AFB07700E3BEEB /* PlayingCardView.h */,
-				D45114E818AFB07700E3BEEB /* PlayingCardView.m */,
+				9C90F5EC1CDD60A100B30AF1 /* Model */,
+				9C90F5ED1CDD60B100B30AF1 /* ViewController */,
+				9C90F5EE1CDD60B800B30AF1 /* View */,
 			);
 			name = PlayingCard;
 			sourceTree = "<group>";
@@ -259,36 +334,9 @@
 		D4F9ECF318AE517900C86810 /* Set */ = {
 			isa = PBXGroup;
 			children = (
-				D4AA8FA118A813CD00AD289F /* SetGameViewController.h */,
-				D4AA8FA218A813CD00AD289F /* SetGameViewController.m */,
-				D46DB56418B15DAC0095567F /* SetCardView.h */,
-				D46DB56518B15DAC0095567F /* SetCardView.m */,
-			);
-			name = Set;
-			sourceTree = "<group>";
-		};
-		D4F9ECF418AE518C00C86810 /* PlayingCard */ = {
-			isa = PBXGroup;
-			children = (
-				D4B9263A189DA87600B0D523 /* PlayingCard.h */,
-				D4B9263B189DA87600B0D523 /* PlayingCard.m */,
-				D4B92640189DACF300B0D523 /* PlayingCardDeck.h */,
-				D4B92641189DACF300B0D523 /* PlayingCardDeck.m */,
-				D43DE5A6189DBFD400CEF24D /* PlayingCardGame.h */,
-				D43DE5A7189DBFD400CEF24D /* PlayingCardGame.m */,
-			);
-			name = PlayingCard;
-			sourceTree = "<group>";
-		};
-		D4F9ECF518AE519B00C86810 /* Set */ = {
-			isa = PBXGroup;
-			children = (
-				D4F63A2518A30DCA00FE4067 /* SetCard.h */,
-				D4F63A2618A30DCA00FE4067 /* SetCard.m */,
-				D4F63A2218A30D2800FE4067 /* SetDeck.h */,
-				D4F63A2318A30D2800FE4067 /* SetDeck.m */,
-				D4AA8FA418A8143000AD289F /* SetGame.h */,
-				D4AA8FA518A8143000AD289F /* SetGame.m */,
+				9C90F5EF1CDD60C300B30AF1 /* Model */,
+				9C90F5F11CDD60CA00B30AF1 /* ViewController */,
+				9C90F5F01CDD60C700B30AF1 /* View */,
 			);
 			name = Set;
 			sourceTree = "<group>";
