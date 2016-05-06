@@ -21,6 +21,7 @@
 		9C2D421C1CDD638D00E0B8C8 /* SetCard.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C2D42171CDD638D00E0B8C8 /* SetCard.m */; };
 		9C2D421D1CDD638D00E0B8C8 /* SetDeck.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C2D42191CDD638D00E0B8C8 /* SetDeck.m */; };
 		9C2D421E1CDD638D00E0B8C8 /* SetGame.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C2D421B1CDD638D00E0B8C8 /* SetGame.m */; };
+		9C2D42211CDD63E800E0B8C8 /* PlayingCard.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C2D42201CDD63E800E0B8C8 /* PlayingCard.m */; };
 		9C90F5E71CDD5B9100B30AF1 /* NSException+NotImplemented.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C90F5E61CDD5B9100B30AF1 /* NSException+NotImplemented.m */; };
 		D4215CFE189D8F0A00D47A90 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4215CFD189D8F0A00D47A90 /* Foundation.framework */; };
 		D4215D00189D8F0A00D47A90 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4215CFF189D8F0A00D47A90 /* CoreGraphics.framework */; };
@@ -78,6 +79,8 @@
 		9C2D42191CDD638D00E0B8C8 /* SetDeck.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SetDeck.m; path = Set/SetDeck.m; sourceTree = "<group>"; };
 		9C2D421A1CDD638D00E0B8C8 /* SetGame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SetGame.h; path = Set/SetGame.h; sourceTree = "<group>"; };
 		9C2D421B1CDD638D00E0B8C8 /* SetGame.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SetGame.m; path = Set/SetGame.m; sourceTree = "<group>"; };
+		9C2D421F1CDD63E800E0B8C8 /* PlayingCard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlayingCard.h; path = PlayingCard/PlayingCard.h; sourceTree = "<group>"; };
+		9C2D42201CDD63E800E0B8C8 /* PlayingCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PlayingCard.m; path = PlayingCard/PlayingCard.m; sourceTree = "<group>"; };
 		9C90F5E51CDD59B100B30AF1 /* NSException+NotImplemented.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSException+NotImplemented.h"; sourceTree = "<group>"; };
 		9C90F5E61CDD5B9100B30AF1 /* NSException+NotImplemented.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSException+NotImplemented.m"; sourceTree = "<group>"; };
 		D4215CFA189D8F0A00D47A90 /* Matchismo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Matchismo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -174,6 +177,8 @@
 		9C90F5EC1CDD60A100B30AF1 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				9C2D421F1CDD63E800E0B8C8 /* PlayingCard.h */,
+				9C2D42201CDD63E800E0B8C8 /* PlayingCard.m */,
 				9C2D420A1CDD637300E0B8C8 /* PlayingCardDeck.h */,
 				9C2D420B1CDD637300E0B8C8 /* PlayingCardDeck.m */,
 				9C2D420C1CDD637300E0B8C8 /* PlayingCardGame.h */,
@@ -452,6 +457,7 @@
 				D45114EC18AFB4A500E3BEEB /* Grid.m in Sources */,
 				D4728A3118A2C4820003432A /* GameHistoryViewController.m in Sources */,
 				9C90F5E71CDD5B9100B30AF1 /* NSException+NotImplemented.m in Sources */,
+				9C2D42211CDD63E800E0B8C8 /* PlayingCard.m in Sources */,
 				9C2D421D1CDD638D00E0B8C8 /* SetDeck.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
