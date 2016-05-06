@@ -7,20 +7,13 @@
 //
 
 #import "Card.h"
+#import "NSException+NotImplemented.h"
 
 @implementation Card
 
 - (int)match:(NSArray *)otherCards
 {
-    int score = 0;
-    
-    for (Card *card in otherCards)
-    {
-        if ([card.contents.string isEqualToString:self.contents.string])
-            score = 1;
-    }
-    
-    return score;
+    @throw [NSException notImplementedException];
 }
 
 @end
