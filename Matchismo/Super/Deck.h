@@ -10,9 +10,10 @@
 
 @interface Deck : NSObject
 
+// The methods below should probably not be overridden by subclasses.
+// If really necessary, then be sure to call super.
 - (void)addCard:(Card *)card;
-
 - (id)drawRandomCard;
-@property (nonatomic, readonly) BOOL isEmpty;
+- (BOOL)isEmpty;
 
 @end
