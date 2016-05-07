@@ -7,6 +7,7 @@
 //
 
 #import "Game.h"
+#import "NSException+NotImplemented.h"
 
 @interface Game()
 @property (strong, nonatomic, readwrite) NSMutableAttributedString *info;
@@ -40,7 +41,7 @@
     [self.cards removeObject:card];
 }
 
-- (BOOL) isDeckEmpty
+- (BOOL)isDeckEmpty
 {
     return self.deck.isEmpty;
 }
@@ -131,24 +132,6 @@
     }
 }
 
-- (NSUInteger)amountOfCardsToChoose {
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
-                                 userInfo:nil];
-}
-
-- (NSInteger)pointsWhenMatchedWithLastChosenCard:(Card*)card andScored:(NSInteger)matchScore {
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
-                                 userInfo:nil];
-}
-
-- (NSInteger)pointsWhenNoMatchesWithLastChosenCard:(Card*)card {
-    @throw [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
-                                 userInfo:nil];
-}
-
 - (NSUInteger)cardChoosingCost {
     return 1;
 }
@@ -215,6 +198,23 @@
     [self.history appendAttributedString:self.info];
     NSString *linebreak = @"\n";
     [self.history appendAttributedString:[[NSAttributedString alloc] initWithString:linebreak]];
+}
+
+#pragma mark - Abstract methods: implementation required on subclasses
+
+- (NSUInteger)amountOfCardsToChoose
+{
+    @throw [NSException notImplementedException];
+}
+
+- (NSInteger)pointsWhenMatchedWithLastChosenCard:(Card*)card andScored:(NSInteger)matchScore
+{
+    @throw [NSException notImplementedException];
+}
+
+- (NSInteger)pointsWhenNoMatchesWithLastChosenCard:(Card*)card
+{
+    @throw [NSException notImplementedException];
 }
 
 @end
