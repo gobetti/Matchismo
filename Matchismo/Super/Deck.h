@@ -12,7 +12,7 @@
 
 // The methods below should probably not be overridden by subclasses.
 // If really necessary, then be sure to call super.
-- (void)addCard:(Card *)card;
+- (void)addCard:(id<Card>)card;
 - (id)drawRandomCard;
 - (BOOL)isEmpty;
 

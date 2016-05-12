@@ -63,18 +63,18 @@ static const int MATCH2_BONUS = 2;
     return self.mode;
 }
 
-- (NSInteger)pointsWhenMatchedWithLastChosenCard:(Card*)card andScored:(NSInteger)matchScore {
+- (NSInteger)pointsWhenMatchedWithLastChosenCard:(id<Card>)card andScored:(NSInteger)matchScore {
     NSMutableArray *mutableCards = [NSMutableArray arrayWithArray:[self.chosenCards allObjects]];
     [mutableCards removeObject:card];
-    Card *otherCard = [mutableCards firstObject];
-    Card *anotherCard = [mutableCards lastObject];
+    id<Card> otherCard = [mutableCards firstObject];
+    id<Card> anotherCard = [mutableCards lastObject];
     int matchScore1 = 0, matchScore2 = 0; // might be used for 1 mismatch + 1 match case in 3-card mode
     
     // testing first the case when no mismatches were found:
     if (self.mode == 2 ||
         (self.mode == 3 && (matchScore == 2 || matchScore == 5 || matchScore == 8))) // no mismatches in 3-card mode
     {
-        for (Card *everyCard in self.chosenCards) {
+        for (id<Card> everyCard in self.chosenCards) {
             everyCard.matched = YES;
         }
         
@@ -105,12 +105,12 @@ static const int MATCH2_BONUS = 2;
     }
 }
 
-- (NSInteger)pointsWhenNoMatchesWithLastChosenCard:(Card*)card {
+- (NSInteger)pointsWhenNoMatchesWithLastChosenCard:(id<Card>)card {
     NSMutableArray *mutableCards = [NSMutableArray arrayWithArray:[self.chosenCards allObjects]];
     [mutableCards removeObject:card];
     
     // flip back all but the last card chosen:
-    for (Card *everyCard in mutableCards)
+    for (id<Card> everyCard in mutableCards)
     {
         everyCard.chosen = NO;
     }

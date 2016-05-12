@@ -20,7 +20,7 @@
     return _cards;
 }
 
-- (void)addCard:(Card *)card
+- (void)addCard:(id<Card>)card
 {
     [self.cards addObject:card];
 }

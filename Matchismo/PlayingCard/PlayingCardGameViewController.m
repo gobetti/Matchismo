@@ -47,14 +47,14 @@
 
 // Reimplemented functions:
 
-- (id)createViewForCard:(id)card
+- (id)createViewForCard:(id<Card>)card
 {
     PlayingCardView *view = [[PlayingCardView alloc] init];
     [self updateView:view forCard:card];
     return view;
 }
 
-- (void)updateView:(CardView *)view forCard:(Card *)card
+- (void)updateView:(CardView *)view forCard:(id<Card>)card
 {
     if (![card isKindOfClass:[PlayingCard class]]) return;
     if (![view isKindOfClass:[PlayingCardView class]]) return;

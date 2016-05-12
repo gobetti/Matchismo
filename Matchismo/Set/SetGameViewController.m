@@ -43,7 +43,7 @@
     return view;
 }
 
-- (void)updateView:(CardView *)view forCard:(Card *)card
+- (void)updateView:(CardView *)view forCard:(id<Card>)card
 {
     if (![card isKindOfClass:[SetCard class]]) return;
     if (![view isKindOfClass:[SetCardView class]]) return;

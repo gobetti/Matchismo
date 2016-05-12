@@ -29,7 +29,7 @@
 {
     if (gesture.state == UIGestureRecognizerStateEnded)
     {
-        Card *card = [self.game cardAtIndex:gesture.view.tag];
+        id<Card> card = [self.game cardAtIndex:gesture.view.tag];
         
         [UIView transitionWithView:gesture.view
                           duration:0.2
@@ -50,7 +50,7 @@
     NSMutableArray *matchedIndexes = [[NSMutableArray alloc] init];
     for (NSUInteger cardIndex = 0; cardIndex < self.game.numberOfPresentCards; cardIndex++)
     {
-        Card *card = [self.game cardAtIndex:cardIndex];
+        id<Card> card = [self.game cardAtIndex:cardIndex];
         CardView *cardView = self.cardViews[cardIndex];
         if (cardView.faceUp != card.chosen)
         {
@@ -84,7 +84,7 @@
     
 }
 
-- (void)updateChosenView:(CardView *)view forCard:(Card *)card
+- (void)updateChosenView:(CardView *)view forCard:(id<Card>)card
 {
     // flips the card or changes transparency (according to the game)
     [UIView transitionWithView:view
@@ -153,7 +153,7 @@
 {
     for (NSUInteger cardIndex = 0; cardIndex < self.game.numberOfPresentCards; cardIndex++)
     {
-        Card *card = [self.game cardAtIndex:cardIndex];
+        id<Card> card = [self.game cardAtIndex:cardIndex];
         UIView *cardView;
         cardView = [self createViewForCard:card];
         cardView.tag = cardIndex;
@@ -244,7 +244,7 @@
     }
     
     int newViews = 0;
-    for (Card *card in newCards)
+    for (id<Card> card in newCards)
     {
         CardView *cardView;
         cardView = [self createViewForCard:card];
@@ -320,13 +320,13 @@
 }
 
 // associates a card to a view
-- (id)createViewForCard:(id)card
+- (id)createViewForCard:(id<Card>)card
 {
     @throw [NSException notImplementedException];
 }
 
 // shows the card face in its respective view
-- (void)updateView:(CardView *)view forCard:(Card *)card
+- (void)updateView:(CardView *)view forCard:(id<Card>)card
 {
     @throw [NSException notImplementedException];
 }

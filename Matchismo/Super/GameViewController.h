@@ -23,6 +23,6 @@
 //- (BOOL)onAnimationCompletionShouldUpdateGridWhenDeckIsNotEmpty;
 //- (BOOL)onAnimationCompletionShouldUpdateGridWhenDeckIsEmpty;
 //- (id)createViewForCard:(id)card;
-//- (void)updateView:(CardView *)view forCard:(Card *)card;
+//- (void)updateView:(CardView *)view forCard:(id<Card>)card;
 
 @end

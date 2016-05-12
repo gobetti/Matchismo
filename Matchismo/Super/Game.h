@@ -26,17 +26,17 @@
 // If really necessary, then be sure to call super.
 - (void)chooseCardAtIndex:(NSUInteger)index;
 - (id)cardAtIndex:(NSUInteger)index;
-- (void)removeCard:(Card *)card;
+- (void)removeCard:(id<Card>)card;
 - (NSArray *)dealMoreCards:(NSUInteger)amount;
 - (BOOL)isDeckEmpty;
 
-- (void)updateInfoAddingPoints:(int)points append:(BOOL)append firstCard:(Card*)card1 secondCard:(Card*)card2 thirdCard:(Card*)card3;
+- (void)updateInfoAddingPoints:(int)points append:(BOOL)append firstCard:(id<Card>)card1 secondCard:(id<Card>)card2 thirdCard:(id<Card>)card3;
 - (void)updateInfo:(NSAttributedString *)toDisplay append:(BOOL)append;
 - (void)updateHistory;
 
 // The following (private) methods must be overridden by subclasses:
 //- (NSUInteger)amountOfCardsToChoose;
-//- (NSInteger)pointsWhenMatchedWithLastChosenCard:(Card*)card andScored:(NSInteger)matchScore;
-//- (NSInteger)pointsWhenNoMatchesWithLastChosenCard:(Card*)card;
+//- (NSInteger)pointsWhenMatchedWithLastChosenCard:(id<Card>)card andScored:(NSInteger)matchScore;
+//- (NSInteger)pointsWhenNoMatchesWithLastChosenCard:(id<Card>)card;
 
 @end

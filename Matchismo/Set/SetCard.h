@@ -8,7 +8,7 @@
 
 #import "Card.h"
 
-@interface SetCard : Card
+@interface SetCard : NSObject <Card>
 
 @property (nonatomic) NSUInteger number;
 @property (strong, nonatomic) NSString *symbol;
@@ -19,5 +19,14 @@
 + (NSArray *)validSymbols;
 + (NSArray *)validColors;
 + (NSArray *)validShadings;
+
+#pragma mark - Card protocol:
+
+@property (strong, nonatomic) NSAttributedString *contents;
+
+@property (nonatomic, getter=isChosen) BOOL chosen;
+@property (nonatomic, getter=isMatched) BOOL matched;
+
+- (int)match:(NSArray *) otherCards;
 
 @end

@@ -39,17 +39,17 @@
     return 3;
 }
 
-- (NSInteger)pointsWhenMatchedWithLastChosenCard:(Card*)card andScored:(NSInteger)matchScore {
-    for (Card *everyCard in self.chosenCards) {
+- (NSInteger)pointsWhenMatchedWithLastChosenCard:(id<Card>)card andScored:(NSInteger)matchScore {
+    for (id<Card> everyCard in self.chosenCards) {
         everyCard.matched = YES;
     }
     
     return 21 - self.numberOfPresentCards;
 }
 
-- (NSInteger)pointsWhenNoMatchesWithLastChosenCard:(Card*)card {
+- (NSInteger)pointsWhenNoMatchesWithLastChosenCard:(id<Card>)card {
     // flip back all the chosen cards:
-    for (Card *everyCard in self.chosenCards) {
+    for (id<Card> everyCard in self.chosenCards) {
         everyCard.chosen = NO;
     }
     
@@ -62,18 +62,18 @@
     // won't use for (... in ...) to avoid repetitions of combinations
     for (NSUInteger firstCardIndex = 0; firstCardIndex <= self.numberOfPresentCards-3; firstCardIndex++)
     {
-        Card *firstCard = [self.cards objectAtIndex:firstCardIndex];
+        id<Card> firstCard = [self.cards objectAtIndex:firstCardIndex];
         [currentSet removeAllObjects];
         [currentSet addObject:firstCard];
         for (NSUInteger secondCardIndex = firstCardIndex+1; secondCardIndex <= self.numberOfPresentCards-2; secondCardIndex++)
         {
-            Card *secondCard = [self.cards objectAtIndex:secondCardIndex];
+            id<Card> secondCard = [self.cards objectAtIndex:secondCardIndex];
             if ([currentSet count] == 2)
                 [currentSet removeLastObject];
             [currentSet addObject:secondCard];
             for (NSUInteger thirdCardIndex = secondCardIndex+1; thirdCardIndex <= self.numberOfPresentCards-1; thirdCardIndex++)
             {
-                Card *thirdCard = [self.cards objectAtIndex:thirdCardIndex];
+                id<Card> thirdCard = [self.cards objectAtIndex:thirdCardIndex];
                 //NSLog(@"%d, %d, %d : %@, %@, %@", firstCardIndex, secondCardIndex, thirdCardIndex, firstCard.contents.string, secondCard.contents.string, thirdCard.contents.string);
                 int matchScore = [thirdCard match:currentSet];
                 if (matchScore) // we have a set

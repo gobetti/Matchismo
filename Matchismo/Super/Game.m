@@ -36,7 +36,7 @@
     return _info;
 }
 
-- (void)removeCard:(Card *)card
+- (void)removeCard:(id<Card>)card
 {
     [self.cards removeObject:card];
 }
@@ -55,8 +55,7 @@
     {
         for (int i = 0; i < count; i++)
         {
-            Card *card;
-            card = [self.deck drawRandomCard];
+            id<Card> card = [self.deck drawRandomCard];
             if (card)
             { [self.cards addObject:card]; }
             else
@@ -78,7 +77,7 @@
 
 - (void)chooseCardAtIndex:(NSUInteger)index
 {
-    Card *card = [self cardAtIndex:index];
+    id<Card> card = [self cardAtIndex:index];
     // deselects card (flips it back) if it was already selected:
     if (card.isChosen)
     {
@@ -110,8 +109,8 @@
     
     self.score += points;
     
-    Card *otherCard = [otherCards firstObject];
-    Card *anotherCard = nil;
+    id<Card> otherCard = [otherCards firstObject];
+    id<Card> anotherCard = nil;
     if ([otherCards count] == 2) { // always true for the Set game
         anotherCard = [otherCards lastObject];
     }
@@ -122,12 +121,12 @@
     
     // remove card from the chosenCards if it is not chosen anymore, or if it was matched:
     NSMutableArray *notChosenAnymore = [[NSMutableArray alloc] init];
-    for (Card *chosenCard in self.chosenCards) {
+    for (id<Card> chosenCard in self.chosenCards) {
         if (!chosenCard.isChosen || chosenCard.isMatched) {
             [notChosenAnymore addObject:chosenCard];
         }
     }
-    for (Card *unchosenCard in notChosenAnymore) {
+    for (id<Card> unchosenCard in notChosenAnymore) {
         [self.chosenCards removeObject:unchosenCard];
     }
 }
@@ -142,7 +141,7 @@
     NSMutableArray *newCards = [[NSMutableArray alloc] init];
     for (int i = 0; i <= amount - 1; i++)
     {
-        Card *card = [self.deck drawRandomCard];
+        id<Card> card = [self.deck drawRandomCard];
         if(card) {
             [self.cards addObject:card];
             [newCards addObject:card];
@@ -151,7 +150,7 @@
     return newCards;
 }
 
-- (void)updateInfoAddingPoints:(int)points append:(BOOL)append firstCard:(Card*)card1 secondCard:(Card*)card2 thirdCard:(Card*)card3
+- (void)updateInfoAddingPoints:(int)points append:(BOOL)append firstCard:(id<Card>)card1 secondCard:(id<Card>)card2 thirdCard:(id<Card>)card3
 {
     NSString *string;
     NSMutableAttributedString *toDisplay;
@@ -207,12 +206,12 @@
     @throw [NSException notImplementedException];
 }
 
-- (NSInteger)pointsWhenMatchedWithLastChosenCard:(Card*)card andScored:(NSInteger)matchScore
+- (NSInteger)pointsWhenMatchedWithLastChosenCard:(id<Card>)card andScored:(NSInteger)matchScore
 {
     @throw [NSException notImplementedException];
 }
 
-- (NSInteger)pointsWhenNoMatchesWithLastChosenCard:(Card*)card
+- (NSInteger)pointsWhenNoMatchesWithLastChosenCard:(id<Card>)card
 {
     @throw [NSException notImplementedException];
 }

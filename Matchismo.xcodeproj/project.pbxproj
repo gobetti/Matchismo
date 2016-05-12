@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		9C2967C21CDD6323000C3DD7 /* GameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C2967C11CDD6323000C3DD7 /* GameViewController.m */; };
-		9C2967C91CDD6336000C3DD7 /* Card.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C2967C41CDD6336000C3DD7 /* Card.m */; };
 		9C2967CA1CDD6336000C3DD7 /* Deck.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C2967C61CDD6336000C3DD7 /* Deck.m */; };
 		9C2967CB1CDD6336000C3DD7 /* Game.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C2967C81CDD6336000C3DD7 /* Game.m */; };
 		9C2967CE1CDD633F000C3DD7 /* CardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C2967CD1CDD633F000C3DD7 /* CardView.m */; };
@@ -54,7 +53,6 @@
 		9C2967C01CDD6323000C3DD7 /* GameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GameViewController.h; path = Super/GameViewController.h; sourceTree = "<group>"; };
 		9C2967C11CDD6323000C3DD7 /* GameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GameViewController.m; path = Super/GameViewController.m; sourceTree = "<group>"; };
 		9C2967C31CDD6336000C3DD7 /* Card.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Card.h; path = Super/Card.h; sourceTree = "<group>"; };
-		9C2967C41CDD6336000C3DD7 /* Card.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Card.m; path = Super/Card.m; sourceTree = "<group>"; };
 		9C2967C51CDD6336000C3DD7 /* Deck.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Deck.h; path = Super/Deck.h; sourceTree = "<group>"; };
 		9C2967C61CDD6336000C3DD7 /* Deck.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Deck.m; path = Super/Deck.m; sourceTree = "<group>"; };
 		9C2967C71CDD6336000C3DD7 /* Game.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Game.h; path = Super/Game.h; sourceTree = "<group>"; };
@@ -145,7 +143,6 @@
 			isa = PBXGroup;
 			children = (
 				9C2967C31CDD6336000C3DD7 /* Card.h */,
-				9C2967C41CDD6336000C3DD7 /* Card.m */,
 				9C2967C51CDD6336000C3DD7 /* Deck.h */,
 				9C2967C61CDD6336000C3DD7 /* Deck.m */,
 				9C2967C71CDD6336000C3DD7 /* Game.h */,
@@ -449,7 +446,6 @@
 				D4215D0A189D8F0A00D47A90 /* main.m in Sources */,
 				9C2D42151CDD638800E0B8C8 /* SetGameViewController.m in Sources */,
 				9C2D420F1CDD637300E0B8C8 /* PlayingCardGame.m in Sources */,
-				9C2967C91CDD6336000C3DD7 /* Card.m in Sources */,
 				9C2D42121CDD638400E0B8C8 /* SetCardView.m in Sources */,
 				9C2D42091CDD636D00E0B8C8 /* PlayingCardView.m in Sources */,
 				9C2967CB1CDD6336000C3DD7 /* Game.m in Sources */,
