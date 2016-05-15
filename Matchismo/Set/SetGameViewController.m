@@ -27,6 +27,9 @@
     if (!_game) {
         self->setGame = [[SetGame alloc] init];
         _game = [[Game alloc] initWithDelegate:self->setGame];
+        
+        self.dealButton.enabled = YES;
+        self.dealButton.alpha = 1.0;
     }
     return _game;
 }
@@ -60,32 +63,20 @@
     setCardView.alpha = setCard.chosen ? 0.6 : 1.0;
 }
 
-- (BOOL)onAnimationCompletionShouldUpdateGridWhenDeckIsNotEmpty {
-    self.dealButton.enabled = YES;
-    self.dealButton.alpha = 1.0;
-    
+- (void)onAnimationCompletionWhenDeckIsNotEmpty {
     // deal more cards from the deck if the current number is less than the starting one
     if (self.game.numberOfPresentCards < [self.game numberOfStartingCards]) {
-        return [self dealMoreCards:3];
-    }
-    else {
-        return NO;
+        [self dealMoreCards:[self->setGame amountOfCardsToChoose]];
     }
 }
 
-- (BOOL)onAnimationCompletionShouldUpdateGridWhenDeckIsEmpty {
+- (void)onAnimationCompletionWhenDeckIsEmpty {
     self.dealButton.enabled = NO;
     self.dealButton.alpha = 0.5;
     
     // if there are no more sets, the game is over
-    if ([self->setGame isThereAnySetInGame:self.game])
-    {
+    if ([self->setGame isThereAnySetInGame:self.game]) {
         [self.game gameOver];
-        [self updateUI];
-        return NO;
-    }
-    else {
-        return YES;
     }
 }
 
@@ -93,9 +84,7 @@
 
 - (IBAction)touchDealButton:(UIButton *)sender
 {
-    if ([self dealMoreCards:3]) {
-        [self updateGrid];
-    }
+    [self dealMoreCards:3];
 }
 
 @end

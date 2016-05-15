@@ -9,18 +9,15 @@
 #import <UIKit/UIKit.h>
 @interface GameViewController : UIViewController
 
-// The methods below should probably not be overridden by subclasses.
-// If really necessary, then be sure to call super.
-- (void)updateUI;
-- (void)updateGrid;
-- (IBAction)touchRestartButton:(UIButton *)sender;
+// Be sure to call the super implementation when overriding
+// the methods below:
 - (void)touchCardView:(UITapGestureRecognizer *)gesture;
-- (BOOL)dealMoreCards:(NSUInteger)amount;
+- (void)dealMoreCards:(NSUInteger)amount;
 
 // The following (private) methods must be overridden by subclasses:
 //- (UIViewAnimationOptions) animationOptions;
-//- (BOOL)onAnimationCompletionShouldUpdateGridWhenDeckIsNotEmpty;
-//- (BOOL)onAnimationCompletionShouldUpdateGridWhenDeckIsEmpty;
+//- (void)onAnimationCompletionWhenDeckIsNotEmpty;
+//- (void)onAnimationCompletionWhenDeckIsEmpty;
 //- (id)createViewForCard:(id)card;
 //- (void)updateView:(CardView *)view forCard:(id<Card>)card;
 

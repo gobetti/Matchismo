@@ -66,14 +66,13 @@
     playingCardView.faceUp = playingCard.chosen;
 }
 
-- (BOOL)onAnimationCompletionShouldUpdateGridWhenDeckIsNotEmpty {
+- (void)onAnimationCompletionWhenDeckIsNotEmpty {
     // deal more cards from the deck (2 or 3, according to the mode)
-    return [self dealMoreCards:[self->playingCardGame mode]];
+    [self dealMoreCards:[self->playingCardGame mode]];
 }
 
-- (BOOL)onAnimationCompletionShouldUpdateGridWhenDeckIsEmpty {
-    // no more cards to deal, just update the grid
-    return YES;
+- (void)onAnimationCompletionWhenDeckIsEmpty {
+    // no more cards to deal, @todo implement a game over check
 }
 
 - (void)touchCardView:(UITapGestureRecognizer *)gesture

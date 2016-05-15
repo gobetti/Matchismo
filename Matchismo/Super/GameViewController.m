@@ -40,7 +40,6 @@
                         } completion:^(BOOL finished) {
                             card.chosen = !card.chosen;
                             [self.game chooseCardAtIndex:gesture.view.tag];
-                            [self updateUI];
                         }];
     }
 }
@@ -239,17 +238,14 @@
     }
 }
 
-- (BOOL)dealMoreCards:(NSUInteger)amount
+- (void)dealMoreCards:(NSUInteger)amount
 {
     NSArray *newCards = [[NSArray alloc] initWithArray:[self.game dealMoreCards:amount]];
-    if (!newCards) {
-        return NO;
-    }
-    
+    // resetting "amount" to the real amount of cards got from the game:
     amount = [newCards count];
     NSLog(@"dealing cards, got %d", amount);
     if (amount == 0) {
-        return NO;
+        return;
     }
     
     int newViews = 0;
@@ -268,7 +264,7 @@
         [[[self.cardViews firstObject] superview] addSubview:cardView];
     }
     
-    return YES;
+    [self updateGrid];
 }
 
 - (void)updateMatchedCardView:(CardView *)cardView atIndex:(NSUInteger)index animationOrder:(NSUInteger)order totalOfMatchedCards:(NSUInteger)total
@@ -284,18 +280,12 @@
                          }
                          
                          // if this is the last matched card:
-                         BOOL shouldUpdateGrid = NO;
                          if (!self.game.isDeckEmpty) {
-                             shouldUpdateGrid = [self onAnimationCompletionShouldUpdateGridWhenDeckIsNotEmpty];
+                             [self onAnimationCompletionWhenDeckIsNotEmpty];
                          }
                          // not using "else", because the deck could have been emptied after dealing more cards:
                          if (self.game.isDeckEmpty) {
-                             if ([self onAnimationCompletionShouldUpdateGridWhenDeckIsEmpty]) {
-                                 shouldUpdateGrid = YES;
-                             }
-                         }
-                         
-                         if (shouldUpdateGrid) {
+                             [self onAnimationCompletionWhenDeckIsEmpty];
                              [self updateGrid];
                          }
                          
@@ -315,12 +305,12 @@
     @throw [NSException notImplementedException];
 }
 
-- (BOOL)onAnimationCompletionShouldUpdateGridWhenDeckIsNotEmpty
+- (void)onAnimationCompletionWhenDeckIsNotEmpty
 {
     @throw [NSException notImplementedException];
 }
 
-- (BOOL)onAnimationCompletionShouldUpdateGridWhenDeckIsEmpty
+- (void)onAnimationCompletionWhenDeckIsEmpty
 {
     @throw [NSException notImplementedException];
 }

@@ -152,6 +152,9 @@
     for (id<Card> unchosenCard in notChosenAnymore) {
         [self.chosenCards removeObject:unchosenCard];
     }
+    
+    // inform the UI to update
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"updateUI" object:nil];
 }
 
 // this method returns 0..amount cards
@@ -227,6 +230,9 @@
     NSAttributedString *aString = [[NSAttributedString alloc] initWithString:@"Game over!"];
     [self updateInfo:aString append:NO];
     [self updateHistory];
+    
+    // inform the UI to update
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"updateUI" object:nil];
 }
 
 @end
