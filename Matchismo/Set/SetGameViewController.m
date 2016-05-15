@@ -10,23 +10,25 @@
 #import "SetCard.h"
 #import "SetGame.h"
 #import "SetCardView.h"
+#import "Game.h"
 
 @interface SetGameViewController ()
-@property (strong, nonatomic) SetGame *game;
+{
+    SetGame *setGame;
+}
+@property (strong, nonatomic) Game *game;
 @property (strong, nonatomic) IBOutlet UIButton *dealButton;
 @end
 
 @implementation SetGameViewController
 
-- (SetGame *)game
+- (Game *)game
 {
-    if (!_game) _game = [[SetGame alloc] initWithCardCount:self.numberOfStartingCards];
+    if (!_game) {
+        self->setGame = [[SetGame alloc] init];
+        _game = [[Game alloc] initWithDelegate:self->setGame];
+    }
     return _game;
-}
-
-- (NSUInteger)numberOfStartingCards
-{
-    return 12;
 }
 
 - (UIViewAnimationOptions)animationOptions
@@ -63,7 +65,7 @@
     self.dealButton.alpha = 1.0;
     
     // deal more cards from the deck if the current number is less than the starting one
-    if (self.game.numberOfPresentCards < self.numberOfStartingCards) {
+    if (self.game.numberOfPresentCards < [self.game numberOfStartingCards]) {
         return [self dealMoreCards:3];
     }
     else {
@@ -76,7 +78,7 @@
     self.dealButton.alpha = 0.5;
     
     // if there are no more sets, the game is over
-    if (!self.game.isThereAnySet)
+    if ([self->setGame isThereAnySetInGame:self.game])
     {
         [self.game gameOver];
         [self updateUI];
@@ -91,13 +93,9 @@
 
 - (IBAction)touchDealButton:(UIButton *)sender
 {
-    if (self.game.isThereAnySet)
-    {
-        [self.game penalizeUnseenSet];
-        [self updateUI];
-    }
     if ([self dealMoreCards:3]) {
         [self updateGrid];
     }
 }
+
 @end

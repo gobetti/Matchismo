@@ -1,18 +1,19 @@
 //
-//  SetGame.h
+//  GameDelegate.h
 //  Matchismo
 //
-//  Created by Marcelo Gobetti on 2/9/14.
-//  Copyright (c) 2014 Stanford. All rights reserved.
+//  Created by Marcelo Gobetti on 5/12/16.
+//  Copyright © 2016 Stanford. All rights reserved.
 //
 
-#import "GameDelegate.h"
+#ifndef GameDelegate_h
+#define GameDelegate_h
 
-@interface SetGame : NSObject<GameDelegate>
+#import "Card.h"
+#import "Deck.h"
+#import "Game.h"
 
-- (BOOL)isThereAnySetInGame:(Game *)game;
-
-#pragma mark - GameDelegate protocol:
+@protocol GameDelegate <NSObject>
 
 - (Deck*)deck;
 
@@ -22,6 +23,9 @@
 - (int)pointsWhenMatchedWithLastChosenCard:(id<Card>)card andScored:(int)matchScore inGame:(Game *)game;
 - (int)pointsWhenNoMatchesWithLastChosenCard:(id<Card>)card inGame:(Game *)game;
 
+@optional
 - (void)willDealMoreCardsInGame:(Game *)game;
 
 @end
+
+#endif /* GameDelegate_h */

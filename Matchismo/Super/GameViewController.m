@@ -176,6 +176,15 @@
 {
     [super viewDidLoad];
     [self redealCards];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateUI)
+                                                 name:@"updateUI"
+                                               object:nil];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"updateUI" object:nil];
 }
 
 - (void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
@@ -185,7 +194,7 @@
 
 - (NSMutableArray *)cardViews
 {
-    if (!_cardViews) _cardViews = [NSMutableArray arrayWithCapacity:self.numberOfStartingCards];
+    if (!_cardViews) _cardViews = [NSMutableArray arrayWithCapacity:[self.game numberOfStartingCards]];
     return _cardViews;
 }
 
@@ -195,11 +204,11 @@
         NSUInteger minimumNumberOfCells = 0;
         if (self.game.numberOfPresentCards)
         {
-            minimumNumberOfCells = self.game.numberOfPresentCards;
+            minimumNumberOfCells = [self.game numberOfPresentCards];
         }
         else
         {
-            minimumNumberOfCells = self.numberOfStartingCards;
+            minimumNumberOfCells = [self.game numberOfStartingCards];
         }
         
         _grid = [[Grid alloc] initWithSize:self.gridView.frame.size andCellAspectRatio:1/1.5 toContainAtLeast:minimumNumberOfCells];
@@ -281,7 +290,9 @@
                          }
                          // not using "else", because the deck could have been emptied after dealing more cards:
                          if (self.game.isDeckEmpty) {
-                             shouldUpdateGrid = [self onAnimationCompletionShouldUpdateGridWhenDeckIsEmpty];
+                             if ([self onAnimationCompletionShouldUpdateGridWhenDeckIsEmpty]) {
+                                 shouldUpdateGrid = YES;
+                             }
                          }
                          
                          if (shouldUpdateGrid) {
@@ -298,11 +309,6 @@
 }
 
 #pragma mark - Abstract methods: implementation required on subclasses
-
-- (NSUInteger) numberOfStartingCards
-{
-    @throw [NSException notImplementedException];
-}
 
 - (UIViewAnimationOptions) animationOptions
 {

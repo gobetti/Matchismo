@@ -10,11 +10,7 @@
 #import "PlayingCardDeck.h"
 
 @interface PlayingCardGame()
-@property (nonatomic, readwrite) NSUInteger mode;
-// private:
-@property (nonatomic, strong) NSMutableArray *cards;
-@property (nonatomic, strong) NSMutableSet *chosenCards;
-@property (strong, nonatomic) PlayingCardDeck *deck; // will hold to this deck
+@property (nonatomic, readwrite) unsigned int mode;
 @end
 
 @implementation PlayingCardGame
@@ -23,30 +19,18 @@ static const int MISMATCH_PENALTY = 2;
 static const int MATCH_BONUS = 4;
 static const int MATCH2_BONUS = 2;
 
-- (instancetype)initWithCardCount:(NSUInteger)count {
-    if (!(self = [super initWithCardCount:count])) {
+- (instancetype)init
+{
+    if (!(self = [super init])) {
         return nil;
     }
     self.mode = 2; // default = 2-card
     return self;
 }
 
-- (PlayingCardDeck *)deck
+- (Deck *)deck
 {
-    if (!_deck) _deck = [[PlayingCardDeck alloc] init];
-    return _deck;
-}
-
-- (NSMutableArray *)cards
-{
-    if (!_cards) _cards = [[NSMutableArray alloc] init];
-    return _cards;
-}
-
-- (NSMutableSet *)chosenCards
-{
-    if (!_chosenCards) _chosenCards = [[NSMutableSet alloc] init];
-    return _chosenCards;
+    return [[PlayingCardDeck alloc] init];
 }
 
 - (void)changeMode
@@ -59,12 +43,21 @@ static const int MATCH2_BONUS = 2;
     }
 }
 
-- (NSUInteger)amountOfCardsToChoose {
+- (unsigned int)numberOfStartingCards {
+    return 40;
+}
+
+- (unsigned int)cardChoosingCost {
+    return 1;
+}
+
+- (unsigned int)amountOfCardsToChoose {
     return self.mode;
 }
 
-- (NSInteger)pointsWhenMatchedWithLastChosenCard:(id<Card>)card andScored:(NSInteger)matchScore {
-    NSMutableArray *mutableCards = [NSMutableArray arrayWithArray:[self.chosenCards allObjects]];
+- (int)pointsWhenMatchedWithLastChosenCard:(id<Card>)card andScored:(int)matchScore inGame:(Game *)game
+{
+    NSMutableArray *mutableCards = [NSMutableArray arrayWithArray:[game.chosenCards allObjects]];
     [mutableCards removeObject:card];
     id<Card> otherCard = [mutableCards firstObject];
     id<Card> anotherCard = [mutableCards lastObject];
@@ -74,7 +67,7 @@ static const int MATCH2_BONUS = 2;
     if (self.mode == 2 ||
         (self.mode == 3 && (matchScore == 2 || matchScore == 5 || matchScore == 8))) // no mismatches in 3-card mode
     {
-        for (id<Card> everyCard in self.chosenCards) {
+        for (id<Card> everyCard in game.chosenCards) {
             everyCard.matched = YES;
         }
         
@@ -90,29 +83,25 @@ static const int MATCH2_BONUS = 2;
         {
             otherCard.matched = YES;
             anotherCard.chosen = NO;
-            [self updateInfoAddingPoints:(-MISMATCH_PENALTY) append:NO firstCard:card secondCard:anotherCard thirdCard:nil];
-            [self updateInfoAddingPoints:matchScore2*MATCH2_BONUS append:YES firstCard:card secondCard:otherCard thirdCard:nil];
         }
         else if(!matchScore2) // otherCard doesn't match
         {
             anotherCard.matched = YES;
             otherCard.chosen = NO;
-            [self updateInfoAddingPoints:(-MISMATCH_PENALTY) append:NO firstCard:card secondCard:otherCard thirdCard:nil];
-            [self updateInfoAddingPoints:matchScore1*MATCH2_BONUS append:YES firstCard:card secondCard:anotherCard thirdCard:nil];
         }
         
         return (matchScore1+matchScore2) * MATCH2_BONUS - MISMATCH_PENALTY;
     }
 }
 
-- (NSInteger)pointsWhenNoMatchesWithLastChosenCard:(id<Card>)card {
-    NSMutableArray *mutableCards = [NSMutableArray arrayWithArray:[self.chosenCards allObjects]];
-    [mutableCards removeObject:card];
-    
-    // flip back all but the last card chosen:
-    for (id<Card> everyCard in mutableCards)
+- (int)pointsWhenNoMatchesWithLastChosenCard:(id<Card>)card inGame:(Game *)game
+{
+    // flip back all but the last chosen card:
+    for (id<Card> everyCard in game.chosenCards)
     {
-        everyCard.chosen = NO;
+        if (![everyCard isEqual:card]) {
+            everyCard.chosen = NO;
+        }
     }
     
     if (self.mode == 2)

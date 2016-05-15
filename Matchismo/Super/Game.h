@@ -8,35 +8,34 @@
 
 #import "Deck.h"
 
+@protocol GameDelegate; // forward declaration
+
 @interface Game : NSObject
+
+// to be read by the game delegate:
+@property (nonatomic, strong, readonly) NSMutableArray *cards;
+@property (nonatomic, strong, readonly) NSMutableSet *chosenCards;
 
 // to be read by the view controller:
 @property (nonatomic) NSInteger score;
 @property (strong, nonatomic, readonly) NSMutableAttributedString *info;
 @property (strong, nonatomic, readonly) NSMutableAttributedString *history;
-@property (nonatomic, readonly) NSUInteger numberOfPresentCards;
 
-- (instancetype)init __attribute__((unavailable ("One must use the designated initializer: initWithCardCount:")));
-- (instancetype)initWithCardCount:(NSUInteger)count NS_DESIGNATED_INITIALIZER;
+- (instancetype)init __attribute__((unavailable ("One must use the designated initializer: initWithDelegate:")));
+- (instancetype)initWithDelegate:(id<GameDelegate>)delegate NS_DESIGNATED_INITIALIZER;
 
-// The method below can optionally be overridden by subclasses:
-- (NSUInteger)cardChoosingCost;
-
-// The methods below should probably not be overridden by subclasses.
-// If really necessary, then be sure to call super.
-- (void)chooseCardAtIndex:(NSUInteger)index;
-- (id)cardAtIndex:(NSUInteger)index;
+- (unsigned int)numberOfStartingCards;
 - (void)removeCard:(id<Card>)card;
+- (NSUInteger)numberOfPresentCards;
+
+- (void)chooseCardAtIndex:(NSUInteger)index;
+- (id<Card>)cardAtIndex:(NSUInteger)index;
 - (NSArray *)dealMoreCards:(NSUInteger)amount;
 - (BOOL)isDeckEmpty;
 
-- (void)updateInfoAddingPoints:(int)points append:(BOOL)append firstCard:(id<Card>)card1 secondCard:(id<Card>)card2 thirdCard:(id<Card>)card3;
 - (void)updateInfo:(NSAttributedString *)toDisplay append:(BOOL)append;
+- (void)updateInfoAddingPoints:(int)points append:(BOOL)append firstCard:(id<Card>)card1 secondCard:(id<Card>)card2 thirdCard:(id<Card>)card3;
 - (void)updateHistory;
-
-// The following (private) methods must be overridden by subclasses:
-//- (NSUInteger)amountOfCardsToChoose;
-//- (NSInteger)pointsWhenMatchedWithLastChosenCard:(id<Card>)card andScored:(NSInteger)matchScore;
-//- (NSInteger)pointsWhenNoMatchesWithLastChosenCard:(id<Card>)card;
+- (void)gameOver;
 
 @end

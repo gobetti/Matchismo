@@ -9,71 +9,87 @@
 #import "SetGame.h"
 #import "SetDeck.h"
 
-@interface SetGame()
-@property (nonatomic, strong) NSMutableArray *cards;
-@property (nonatomic, strong) NSMutableSet *chosenCards;
-@property (strong, nonatomic) SetDeck *deck; // will hold to this deck
-@end
-
 @implementation SetGame
 
-- (SetDeck *)deck
+- (Deck *)deck
 {
-    if (!_deck) _deck = [[SetDeck alloc] init];
-    return _deck;
+    return [[SetDeck alloc] init];
 }
 
-- (NSMutableArray *)cards
-{
-    if (!_cards) _cards = [[NSMutableArray alloc] init];
-    return _cards;
+- (unsigned int)numberOfStartingCards {
+    return 12;
 }
 
-- (NSMutableSet *)chosenCards
-{
-    if (!_chosenCards) _chosenCards = [[NSMutableSet alloc] init];
-    return _chosenCards;
+- (unsigned int)cardChoosingCost {
+    return 1;
 }
 
-- (NSUInteger)amountOfCardsToChoose {
+- (unsigned int)amountOfCardsToChoose {
     return 3;
 }
 
-- (NSInteger)pointsWhenMatchedWithLastChosenCard:(id<Card>)card andScored:(NSInteger)matchScore {
-    for (id<Card> everyCard in self.chosenCards) {
+- (int)pointsWhenMatchedWithLastChosenCard:(id<Card>)card andScored:(int)matchScore inGame:(Game *)game
+{
+    for (id<Card> everyCard in game.chosenCards) {
         everyCard.matched = YES;
     }
     
-    return 21 - self.numberOfPresentCards;
+    return 21 - (int)[game numberOfPresentCards];
 }
 
-- (NSInteger)pointsWhenNoMatchesWithLastChosenCard:(id<Card>)card {
+- (int)pointsWhenNoMatchesWithLastChosenCard:(id<Card>)card inGame:(Game *)game
+{
     // flip back all the chosen cards:
-    for (id<Card> everyCard in self.chosenCards) {
+    for (id<Card> everyCard in game.chosenCards) {
         everyCard.chosen = NO;
     }
     
-    return -self.numberOfPresentCards;
+    return -(int)[game numberOfPresentCards];
 }
 
-- (BOOL)isThereAnySet
+- (void)willDealMoreCardsInGame:(Game *)game
+{
+    if ([game numberOfPresentCards] < [self numberOfStartingCards]) {
+        // no penalty in this case, it has only got here because the user just found a set
+        return;
+    }
+    
+    if (![self isThereAnySetInGame:game]) {
+        // the user was right to request more cards: no set is available in the table
+        return;
+    }
+    
+    // the user requested to deal more cards, but there was at least 1 set
+    // among the cards in the table. Penalize the score:
+    int points = (int)[game numberOfPresentCards] - 6;
+    game.score -= points;
+    NSString *string = [NSString stringWithFormat:@"(%d) You didn't see an existing set.", -points];
+    NSAttributedString *aString = [[NSAttributedString alloc] initWithString:string];
+    [game updateInfo:aString append:NO];
+    [game updateHistory];
+    
+    // inform the UI to update
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"updateUI" object:nil];
+}
+
+- (BOOL)isThereAnySetInGame:(Game *)game
 {
     NSMutableArray *currentSet = [[NSMutableArray alloc] init];
     // won't use for (... in ...) to avoid repetitions of combinations
-    for (NSUInteger firstCardIndex = 0; firstCardIndex <= self.numberOfPresentCards-3; firstCardIndex++)
+    for (NSUInteger firstCardIndex = 0; firstCardIndex <= [game.cards count] - 3; firstCardIndex++)
     {
-        id<Card> firstCard = [self.cards objectAtIndex:firstCardIndex];
+        id<Card> firstCard = [game.cards objectAtIndex:firstCardIndex];
         [currentSet removeAllObjects];
         [currentSet addObject:firstCard];
-        for (NSUInteger secondCardIndex = firstCardIndex+1; secondCardIndex <= self.numberOfPresentCards-2; secondCardIndex++)
+        for (NSUInteger secondCardIndex = firstCardIndex+1; secondCardIndex <= [game.cards count] - 2; secondCardIndex++)
         {
-            id<Card> secondCard = [self.cards objectAtIndex:secondCardIndex];
+            id<Card> secondCard = [game.cards objectAtIndex:secondCardIndex];
             if ([currentSet count] == 2)
                 [currentSet removeLastObject];
             [currentSet addObject:secondCard];
-            for (NSUInteger thirdCardIndex = secondCardIndex+1; thirdCardIndex <= self.numberOfPresentCards-1; thirdCardIndex++)
+            for (NSUInteger thirdCardIndex = secondCardIndex+1; thirdCardIndex <= [game.cards count] - 1; thirdCardIndex++)
             {
-                id<Card> thirdCard = [self.cards objectAtIndex:thirdCardIndex];
+                id<Card> thirdCard = [game.cards objectAtIndex:thirdCardIndex];
                 //NSLog(@"%d, %d, %d : %@, %@, %@", firstCardIndex, secondCardIndex, thirdCardIndex, firstCard.contents.string, secondCard.contents.string, thirdCard.contents.string);
                 int matchScore = [thirdCard match:currentSet];
                 if (matchScore) // we have a set
@@ -84,20 +100,4 @@
     return NO;
 }
 
-- (void)penalizeUnseenSet
-{
-    int points = self.numberOfPresentCards - 6;
-    self.score -= points;
-    NSString *string = [NSString stringWithFormat:@"(%d) You didn't see an existing set.", -points];
-    NSAttributedString *aString = [[NSAttributedString alloc] initWithString:string];
-    [self updateInfo:aString append:NO];
-    [self updateHistory];
-}
-
-- (void)gameOver
-{
-    NSAttributedString *aString = [[NSAttributedString alloc] initWithString:@"Game over!"];
-    [self updateInfo:aString append:NO];
-    [self updateHistory];
-}
 @end

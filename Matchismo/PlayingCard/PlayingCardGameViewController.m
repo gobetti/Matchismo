@@ -10,22 +10,27 @@
 #import "PlayingCard.h"
 #import "PlayingCardGame.h"
 #import "PlayingCardView.h"
+#import "Game.h"
 
 @interface PlayingCardGameViewController ()
-@property (strong, nonatomic) PlayingCardGame *game;
+{
+    PlayingCardGame *playingCardGame;
+}
+@property (strong, nonatomic) Game *game;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *modeSelector;
 @end
 
 @implementation PlayingCardGameViewController
 
-- (PlayingCardGame *)game
+- (Game *)game
 {
     if (!_game) {
-        _game = [[PlayingCardGame alloc] initWithCardCount:self.numberOfStartingCards];
+        self->playingCardGame = [[PlayingCardGame alloc] init];
+        _game = [[Game alloc] initWithDelegate:self->playingCardGame];
         
         // if 3-card mode is selected on restart,
         if ([self.modeSelector selectedSegmentIndex]) {
-            [self.game changeMode];
+            [self->playingCardGame changeMode];
         }
         
         // ensures that mode changing is enabled when the game (re)starts:
@@ -33,11 +38,6 @@
         [self.modeSelector setEnabled:YES forSegmentAtIndex:1];
     }
     return _game;
-}
-
-- (NSUInteger)numberOfStartingCards
-{
-    return 40;
 }
 
 - (UIViewAnimationOptions)animationOptions
@@ -68,7 +68,7 @@
 
 - (BOOL)onAnimationCompletionShouldUpdateGridWhenDeckIsNotEmpty {
     // deal more cards from the deck (2 or 3, according to the mode)
-    return [self dealMoreCards:[self.game mode]];
+    return [self dealMoreCards:[self->playingCardGame mode]];
 }
 
 - (BOOL)onAnimationCompletionShouldUpdateGridWhenDeckIsEmpty {
@@ -89,6 +89,6 @@
 
 - (IBAction)changeCardMode:(UISegmentedControl *)sender
 {
-    [self.game changeMode];
+    [self->playingCardGame changeMode];
 }
 @end

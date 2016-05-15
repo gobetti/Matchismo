@@ -81,6 +81,7 @@
 		9C2D42201CDD63E800E0B8C8 /* PlayingCard.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PlayingCard.m; path = PlayingCard/PlayingCard.m; sourceTree = "<group>"; };
 		9C90F5E51CDD59B100B30AF1 /* NSException+NotImplemented.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSException+NotImplemented.h"; sourceTree = "<group>"; };
 		9C90F5E61CDD5B9100B30AF1 /* NSException+NotImplemented.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSException+NotImplemented.m"; sourceTree = "<group>"; };
+		9CA34DC01CE541660009ADAE /* GameDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GameDelegate.h; sourceTree = "<group>"; };
 		D4215CFA189D8F0A00D47A90 /* Matchismo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Matchismo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4215CFD189D8F0A00D47A90 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		D4215CFF189D8F0A00D47A90 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -147,6 +148,7 @@
 				9C2967C61CDD6336000C3DD7 /* Deck.m */,
 				9C2967C71CDD6336000C3DD7 /* Game.h */,
 				9C2967C81CDD6336000C3DD7 /* Game.m */,
+				9CA34DC01CE541660009ADAE /* GameDelegate.h */,
 			);
 			name = Model;
 			sourceTree = "<group>";

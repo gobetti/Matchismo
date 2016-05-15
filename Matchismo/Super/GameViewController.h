@@ -18,7 +18,6 @@
 - (BOOL)dealMoreCards:(NSUInteger)amount;
 
 // The following (private) methods must be overridden by subclasses:
-//- (NSUInteger) numberOfStartingCards;
 //- (UIViewAnimationOptions) animationOptions;
 //- (BOOL)onAnimationCompletionShouldUpdateGridWhenDeckIsNotEmpty;
 //- (BOOL)onAnimationCompletionShouldUpdateGridWhenDeckIsEmpty;

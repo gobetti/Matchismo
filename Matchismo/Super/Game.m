@@ -7,21 +7,37 @@
 //
 
 #import "Game.h"
-#import "NSException+NotImplemented.h"
+#import "GameDelegate.h"
 
 @interface Game()
+{
+    id<GameDelegate> gameDelegate;
+}
+@property (nonatomic, strong, readwrite) NSMutableArray *cards;
+@property (nonatomic, strong, readwrite) NSMutableSet *chosenCards;
+@property (nonatomic, strong) Deck *deck;
+@property (strong, nonatomic, readwrite) NSMutableAttributedString *history;
 @property (strong, nonatomic, readwrite) NSMutableAttributedString *info;
-@property (strong, nonatomic, readwrite) NSMutableAttributedString *history; // should be strong for segue
-// private:
-@property (strong, nonatomic) NSMutableArray *cards;
-@property (nonatomic, strong) NSMutableSet *chosenCards;
-@property (strong, nonatomic) Deck *deck;
 @end
 
 @implementation Game
 
-- (NSUInteger)numberOfPresentCards {
-    return [self.cards count];
+- (NSMutableArray *)cards
+{
+    if (!_cards) _cards = [[NSMutableArray alloc] init];
+    return _cards;
+}
+
+- (NSMutableSet *)chosenCards
+{
+    if (!_chosenCards) _chosenCards = [[NSMutableSet alloc] init];
+    return _chosenCards;
+}
+
+- (Deck *)deck
+{
+    if (!_deck) _deck = [self->gameDelegate deck];
+    return _deck;
 }
 
 - (NSMutableAttributedString *)history
@@ -36,9 +52,16 @@
     return _info;
 }
 
-- (void)removeCard:(id<Card>)card
-{
+- (unsigned int)numberOfStartingCards {
+    return [self->gameDelegate numberOfStartingCards];
+}
+
+- (void)removeCard:(id<Card>)card {
     [self.cards removeObject:card];
+}
+
+- (NSUInteger)numberOfPresentCards {
+    return [self.cards count];
 }
 
 - (BOOL)isDeckEmpty
@@ -46,23 +69,23 @@
     return self.deck.isEmpty;
 }
 
-- (instancetype)initWithCardCount:(NSUInteger)count
+- (instancetype)initWithDelegate:(id<GameDelegate>)delegate
 {
-    // start the initializer letting the superclass initialize itself first (and check for failure)
-    self = [super init];
+    if (!delegate || !(self = [super init])) {
+        return nil;
+    }
     
-    if (self)
+    self->gameDelegate = delegate;
+    for (int i = 0; i < [delegate numberOfStartingCards]; i++)
     {
-        for (int i = 0; i < count; i++)
+        id<Card> card = [self.deck drawRandomCard];
+        if (card) {
+            [self.cards addObject:card];
+        }
+        else
         {
-            id<Card> card = [self.deck drawRandomCard];
-            if (card)
-            { [self.cards addObject:card]; }
-            else
-            {
-                self = nil;
-                break;
-            }
+            self = nil;
+            break;
         }
     }
     
@@ -90,7 +113,7 @@
     card.chosen = YES; // show the front of the card
     [self.chosenCards addObject:card];
     
-    if ([self.chosenCards count] != self.amountOfCardsToChoose) {
+    if ([self.chosenCards count] != self->gameDelegate.amountOfCardsToChoose) {
         return;
     }
     
@@ -101,10 +124,10 @@
     
     int points = 0;
     if (matchScore) {
-        points = [self pointsWhenMatchedWithLastChosenCard:card andScored:matchScore];
+        points = [self->gameDelegate pointsWhenMatchedWithLastChosenCard:card andScored:matchScore inGame:self];
     }
     else {
-        points = [self pointsWhenNoMatchesWithLastChosenCard:card];
+        points = [self->gameDelegate pointsWhenNoMatchesWithLastChosenCard:card inGame:self];
     }
     
     self.score += points;
@@ -117,7 +140,7 @@
     [self updateInfoAddingPoints:points append:NO firstCard:card secondCard:otherCard thirdCard:anotherCard];
     
     [self updateHistory];
-    self.score -= self.cardChoosingCost;
+    self.score -= self->gameDelegate.cardChoosingCost;
     
     // remove card from the chosenCards if it is not chosen anymore, or if it was matched:
     NSMutableArray *notChosenAnymore = [[NSMutableArray alloc] init];
@@ -131,13 +154,13 @@
     }
 }
 
-- (NSUInteger)cardChoosingCost {
-    return 1;
-}
-
 // this method returns 0..amount cards
 - (NSArray *)dealMoreCards:(NSUInteger)amount
 {
+    if ([self->gameDelegate respondsToSelector:@selector(willDealMoreCardsInGame:)]) {
+        [self->gameDelegate willDealMoreCardsInGame:self];
+    }
+    
     NSMutableArray *newCards = [[NSMutableArray alloc] init];
     for (int i = 0; i <= amount - 1; i++)
     {
@@ -199,21 +222,11 @@
     [self.history appendAttributedString:[[NSAttributedString alloc] initWithString:linebreak]];
 }
 
-#pragma mark - Abstract methods: implementation required on subclasses
-
-- (NSUInteger)amountOfCardsToChoose
+- (void)gameOver
 {
-    @throw [NSException notImplementedException];
-}
-
-- (NSInteger)pointsWhenMatchedWithLastChosenCard:(id<Card>)card andScored:(NSInteger)matchScore
-{
-    @throw [NSException notImplementedException];
-}
-
-- (NSInteger)pointsWhenNoMatchesWithLastChosenCard:(id<Card>)card
-{
-    @throw [NSException notImplementedException];
+    NSAttributedString *aString = [[NSAttributedString alloc] initWithString:@"Game over!"];
+    [self updateInfo:aString append:NO];
+    [self updateHistory];
 }
 
 @end
