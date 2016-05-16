@@ -1,5 +1,5 @@
 //
-//  NotImplementedException.h
+//  NSException+NotImplemented.h
 //  Matchismo
 //
 //  Created by Marcelo Gobetti on 5/6/16.
