@@ -13,7 +13,7 @@
 + (NSException *)notImplementedException
 {
     return [NSException exceptionWithName:NSInternalInconsistencyException
-                                   reason:[NSString stringWithFormat:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)]
+                                   reason:[NSString stringWithFormat:@"One must override %@ in a subclass", NSStringFromSelector(_cmd)]
                                  userInfo:nil];
 }
 
