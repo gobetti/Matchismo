@@ -22,6 +22,12 @@
 
 @implementation PlayingCardGameViewController
 
+- (void)viewDidLoad
+{
+    self.delegate = self;
+    [super viewDidLoad];
+}
+
 - (Game *)game
 {
     if (!_game) {

@@ -8,6 +8,6 @@
 
 #import "GameViewController.h"
 
-@interface SetGameViewController : GameViewController
+@interface SetGameViewController : GameViewController<GameViewControllerDelegate>
 
 @end

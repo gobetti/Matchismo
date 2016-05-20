@@ -10,17 +10,14 @@
 #import "Game.h"
 #import "GameHistoryViewController.h"
 #import "Grid.h"
-#import "CardView.h"
-#import "NSException+NotImplemented.h"
 
 @interface GameViewController ()
 @property (strong, nonatomic) Game *game;
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
 @property (weak, nonatomic) IBOutlet UILabel *infoLabel;
-
-@property (nonatomic, retain, readwrite) NSMutableArray *cardViews;
+@property (nonatomic, retain) NSMutableArray *cardViews;
 @property (weak, nonatomic) IBOutlet UIView *gridView;
-@property (strong, nonatomic, readwrite) Grid *grid;
+@property (strong, nonatomic) Grid *grid;
 @end
 
 @implementation GameViewController
@@ -33,10 +30,10 @@
         
         [UIView transitionWithView:gesture.view
                           duration:0.2
-                           options:self.animationOptions
+                           options:[self.delegate animationOptions]
                         animations:^{
                             card.chosen = !card.chosen;
-                            [self updateView:(CardView*)gesture.view forCard:card];
+                            [self.delegate updateView:(CardView*)gesture.view forCard:card];
                         } completion:^(BOOL finished) {
                             card.chosen = !card.chosen;
                             [self.game chooseCardAtIndex:gesture.view.tag];
@@ -58,11 +55,11 @@
         
         if (card.matched)
         {
-            // the matched cards are put to a separate array in order to allow it to be differently handled by subclasses:
+            // the matched cards are put to a separate array in order to be sorted later
             [matchedIndexes addObject:[NSNumber numberWithInteger:cardIndex]];
         }
     }
-    self.scoreLabel.text = [NSString stringWithFormat:@"Score: %d", self.game.score];
+    self.scoreLabel.text = [NSString stringWithFormat:@"Score: %ld", self.game.score];
     self.infoLabel.attributedText = self.game.info;
     
     if ([matchedIndexes count])
@@ -88,8 +85,8 @@
     // flips the card or changes transparency (according to the game)
     [UIView transitionWithView:view
                       duration:0.2
-                       options:self.animationOptions
-                    animations:^{ [self updateView:view forCard:card]; }
+                       options:[self.delegate animationOptions]
+                    animations:^{ [self.delegate updateView:view forCard:card]; }
                     completion:NULL];
 }
 
@@ -154,7 +151,7 @@
     {
         id<Card> card = [self.game cardAtIndex:cardIndex];
         UIView *cardView;
-        cardView = [self createViewForCard:card];
+        cardView = [self.delegate createViewForCard:card];
         cardView.tag = cardIndex;
         
         UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
@@ -243,7 +240,6 @@
     NSArray *newCards = [[NSArray alloc] initWithArray:[self.game dealMoreCards:amount]];
     // resetting "amount" to the real amount of cards got from the game:
     amount = [newCards count];
-    NSLog(@"dealing cards, got %d", amount);
     if (amount == 0) {
         return;
     }
@@ -252,7 +248,7 @@
     for (id<Card> card in newCards)
     {
         CardView *cardView;
-        cardView = [self createViewForCard:card];
+        cardView = [self.delegate createViewForCard:card];
         cardView.tag = self.game.numberOfPresentCards - amount + newViews;
         newViews++;
         
@@ -281,11 +277,11 @@
                          
                          // if this is the last matched card:
                          if (!self.game.isDeckEmpty) {
-                             [self onAnimationCompletionWhenDeckIsNotEmpty];
+                             [self.delegate onAnimationCompletionWhenDeckIsNotEmpty];
                          }
                          // not using "else", because the deck could have been emptied after dealing more cards:
                          if (self.game.isDeckEmpty) {
-                             [self onAnimationCompletionWhenDeckIsEmpty];
+                             [self.delegate onAnimationCompletionWhenDeckIsEmpty];
                              [self updateGrid];
                          }
                          
@@ -296,35 +292,6 @@
                              cardView.tag = tag++;
                          }
                      }];
-}
-
-#pragma mark - Abstract methods: implementation required on subclasses
-
-- (UIViewAnimationOptions) animationOptions
-{
-    @throw [NSException notImplementedException];
-}
-
-- (void)onAnimationCompletionWhenDeckIsNotEmpty
-{
-    @throw [NSException notImplementedException];
-}
-
-- (void)onAnimationCompletionWhenDeckIsEmpty
-{
-    @throw [NSException notImplementedException];
-}
-
-// associates a card to a view
-- (id)createViewForCard:(id<Card>)card
-{
-    @throw [NSException notImplementedException];
-}
-
-// shows the card face in its respective view
-- (void)updateView:(CardView *)view forCard:(id<Card>)card
-{
-    @throw [NSException notImplementedException];
 }
 
 @end
